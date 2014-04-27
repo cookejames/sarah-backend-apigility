@@ -4,6 +4,7 @@ namespace WateringSystem\Model;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Log\Logger;
 
 /**
  * Abstract class to carry out common model functions

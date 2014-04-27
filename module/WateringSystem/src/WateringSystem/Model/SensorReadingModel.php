@@ -12,6 +12,8 @@ class SensorReadingModel extends WateringSystemModelAbstract
 	protected $port;
 	/** time to wait for a response when reading from serial port*/
 	protected $readWait = 2;
+	/** number of bytes to read at a time */
+	protected $bytesToRead = 128;
 	
 	public function __construct(array $parameters)
 	{
@@ -21,6 +23,10 @@ class SensorReadingModel extends WateringSystemModelAbstract
 		
 		if (isset($parameters['readWait']) && is_numeric($parameters['readWait'])) {
 			$this->readWait = (int) $parameters['readWait'];
+		}
+		
+		if (isset($parameters['bytesToRead']) && is_numeric($parameters['bytesToRead'])) {
+			$this->bytesToRead = (int) $parameters['bytesToRead'];
 		}
 		
 		$this->port = $parameters['port'];
@@ -75,12 +81,11 @@ class SensorReadingModel extends WateringSystemModelAbstract
 	 */
 	protected function readMessage($pointer)
 	{
-		$readLength = 128;
 		$message = '';
 		$startTime = time();
 
 		while (time() < $startTime + $this->readWait) {
-			$message .= @fread($pointer, $readLength);
+			$message .= @fread($pointer, $this->bytesToRead);
 			$lastChars = substr($message, strlen($message) - 2, 2);
 			if ($lastChars == "\r\n") {
 				break;

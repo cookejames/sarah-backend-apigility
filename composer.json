@@ -1,0 +1,14 @@
+{
+  "name" : "Watering System",
+   "version": "0.0.0",
+  "homepage": "https://github.com/james-jaynne/watering-system-php",
+  "authors": [
+    "James Cooke <james@cookeit.co.uk>"
+  ],
+  "description": "Automated watering system",
+  "license": "MIT",
+  "require" : {
+    "php" : ">=5.3.3",
+    "zendframework/zendframework" : "2.3.*"
+  }
+}

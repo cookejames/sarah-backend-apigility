@@ -7,7 +7,13 @@ class IndexController extends WateringSystemControllerAbstract
 {
     public function indexAction()
     {
-    	$readings = $this->getSensorReadingModel()->getSensorReadings();
+    	try {
+    		$readings = $this->getSensorReadingModel()->getSensorReadings();
+    	} catch (\Exception $e) {
+    		$readings = false;
+    		$this->flashMessenger()->addErrorMessage($e->getMessage());
+    	}
+    	
         return new ViewModel(array('sensorReadings' => $readings));
     }
 }

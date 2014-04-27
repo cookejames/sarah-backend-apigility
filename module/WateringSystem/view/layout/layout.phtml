@@ -35,6 +35,10 @@
 		
 		<div class="content">
 			<div>
+				<?php //render flash messages ?>
+				<?php echo $this->messages(true); ?>
+			</div>
+			<div>
       			<?php echo $this->content; ?>
       		</div>
       	</div>

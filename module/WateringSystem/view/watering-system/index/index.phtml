@@ -1,1 +1,7 @@
-<h1>Welcome to the automated watering system</h1>
+<h1>Sensor Readings</h1>
+<dl>
+	<?php foreach ($this->sensorReadings as $sensor => $value) : ?>
+	<dt><?php echo $this->escapehtml($sensor); ?></dt>
+		<dd><?php echo $this->escapehtml($value); ?></dd>
+	<?php endforeach; ?>
+</dl>

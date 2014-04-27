@@ -1,13 +1,13 @@
 <?php
 namespace WateringSystem\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class IndexController extends AbstractActionController
+class IndexController extends WateringSystemControllerAbstract
 {
     public function indexAction()
     {
-        return new ViewModel();
+    	$readings = $this->getSensorReadingModel()->getSensorReadings();
+        return new ViewModel(array('sensorReadings' => $readings));
     }
 }

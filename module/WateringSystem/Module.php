@@ -6,6 +6,8 @@ use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use WateringSystem\Model\SensorReadingModel;
 use WateringSystem\View\Helper\MessageHelper;
+use Zend\Log\Writer\Stream;
+use Zend\Log\Logger;
 
 class Module
 {
@@ -17,6 +19,10 @@ class Module
         
         $this->setInvokables($e->getApplication()->getServiceManager())
         	 ->setFactories($e->getApplication()->getServiceManager());
+        
+        //set the logger
+        $logger = $e->getApplication()->getServiceManager()->get('logger');
+        Logger::registerErrorHandler($logger);
     }
 
     public function getConfig()
@@ -52,6 +58,13 @@ class Module
     				$params = array();
     			}
     			return new SensorReadingModel($params);
+    		})
+    		->setFactory('logger', function($serviceLocator){
+    			$writer = new Stream('logs/log');
+    			$logger = new Logger();
+    			$logger->addWriter($writer);
+    			
+    			return $logger;
     		});
     	return $this;
     }

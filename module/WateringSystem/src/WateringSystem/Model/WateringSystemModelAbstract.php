@@ -32,4 +32,16 @@ abstract class WateringSystemModelAbstract implements ServiceLocatorAwareInterfa
 	{
 		return $this->serviceLocator;
 	}
+	
+	/**
+	 * Log a message
+	 * @param String $message
+	 * @param String $priority
+	 */
+	public function log($message, $priority = Logger::INFO)
+	{
+		$logger = $this->getServiceLocator()->get('logger');
+		$logger->log($priority, $message);
+		return $this;
+	}
 }

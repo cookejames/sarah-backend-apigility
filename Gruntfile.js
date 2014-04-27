@@ -85,6 +85,5 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-phpunit');
 
 	// Task definition
-	grunt.registerTask('default', ['watch']);
-	grunt.registerTask('setup', ['concat', 'less', 'uglify', 'copy']);
+	grunt.registerTask('default', ['concat', 'less', 'uglify', 'copy']);
 };

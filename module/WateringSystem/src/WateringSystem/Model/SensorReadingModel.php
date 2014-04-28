@@ -14,22 +14,30 @@ class SensorReadingModel extends WateringSystemModelAbstract
 	protected $readWait = 2;
 	/** number of bytes to read at a time */
 	protected $bytesToRead = 128;
+	/** carriage return character */
+	protected $carriageReturn = '\n';
 	
 	public function __construct(array $parameters)
 	{
 		if (!isset($parameters['port']) || !is_string($parameters['port'])) {
 			throw new \Exception('Sensor port must be set');
+		} else {
+			$this->port = $parameters['port'];
 		}
-		
+
 		if (isset($parameters['readWait']) && is_numeric($parameters['readWait'])) {
 			$this->readWait = (int) $parameters['readWait'];
 		}
 		
-		if (isset($parameters['bytesToRead']) && is_numeric($parameters['bytesToRead'])) {
+			if (isset($parameters['bytesToRead']) && is_numeric($parameters['bytesToRead'])) {
 			$this->bytesToRead = (int) $parameters['bytesToRead'];
 		}
 		
-		$this->port = $parameters['port'];
+		if (isset($parameters['carriageReturn'])) {
+			$this->carriageReturn = $parameters['carriageReturn'];
+		}
+		
+		
 	}
 	
 	/**
@@ -85,14 +93,18 @@ class SensorReadingModel extends WateringSystemModelAbstract
 		$startTime = time();
 
 		while (time() < $startTime + $this->readWait) {
-			$message .= @fread($pointer, $this->bytesToRead);
-			$lastChars = substr($message, strlen($message) - 2, 2);
-			if ($lastChars == "\r\n") {
+			$bytes = @fread($pointer, $this->bytesToRead);
+			if (($pos = strpos($bytes, $this->carriageReturn)) == true) {
+				$split = explode($this->carriageReturn, $bytes);
+				$bytes = $split[0];
+			}
+			$message .= $bytes;
+			if ($pos) {
 				break;
 			}
 			usleep(100);
 		}
-		
+		$this->log('Read sensor message: ' . $message);
 		return $message;
 	}
 	

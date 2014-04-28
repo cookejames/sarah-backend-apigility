@@ -16,5 +16,6 @@ return array(
 		'port'	=> '', //set the com port eg /dev/ttyACM0,
 		'readWait' => 2,
 		'bytesToRead' => '128', //number of bytes to read at a time
+		'carriageReturn' => '\n',
 	),
 );

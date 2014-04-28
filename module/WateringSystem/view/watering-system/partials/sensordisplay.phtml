@@ -1,0 +1,31 @@
+<?php 
+use WateringSystem\Entity\Sensor;
+use WateringSystem\Entity\SensorValue;
+$sensor = $this->sensor;
+if ($sensor instanceof Sensor == false) return;
+?>
+
+<div class="sensorReading">
+	<div class="title">
+		<?php echo $this->escapehtml($this->sensor->getDescription()); ?>
+	</div>
+	<div class="value">
+	<?php 
+		$sensorValue = $this->sensorvalue($sensor);
+		if ($sensorValue instanceof SensorValue) {
+			echo $this->escapehtml($sensorValue->getValue() . $sensor->getUnits());
+		} else {
+			echo '--';
+		}
+	?>
+	</div>
+	<?php if ($sensor->getIsRanged()) : ?>
+	<div class="progress progress-striped">
+		<?php 
+		$r = $sensor->getRange();
+			$percent = (int) ($sensorValue->getValue() / $sensor->getRange() * 100);
+		?>
+		<div class="progress-bar progress-bar-info" style="width: <?php echo $percent?>%"></div>
+	</div>
+	<?php endif; ?>
+</div>

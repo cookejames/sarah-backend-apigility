@@ -1,12 +1,13 @@
 <h1>Sensor Readings</h1>
 
 <?php if ($this->sensors) : ?>
-	<dl>
-		<?php foreach ($this->sensors as $sensor) : ?>
-		<dt><?php echo $this->escapehtml($sensor->getDescription()); ?></dt>
-			<dd><?php echo $this->escapehtml($this->SensorValue($sensor)->getValue() . $sensor->getUnits()); ?></dd>
-		<?php endforeach; ?>
-	</dl>
+<div>
+<?php
+	foreach ($this->sensors as $sensor) {
+		echo $this->partial('watering-system/partials/sensordisplay.phtml', array('sensor' => $sensor));
+	} 
+?>
+</div>
 <?php else : ?>
 	<p>No sensor values found</p>
 <?php endif; ?>

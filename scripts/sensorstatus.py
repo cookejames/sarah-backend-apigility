@@ -21,11 +21,9 @@ if not options.port:
 ser = serial.Serial(options.port, baudRate)
 ser.timeout = timeout
 
-if hasattr(options, 'message'):
+if hasattr(options, 'message') and isinstance(options.message, basestring):
 	ser.write('status')
 else:
-	print '{"result":{"h1":"58.0", "t1":"22.0", "t2":"19.7", "l1":"119"}}';
-	sys.exit(0)
 	startTime = time.time()
 	while (time.time() < startTime + timeout):
 		print ser.readline()

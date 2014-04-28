@@ -25,7 +25,7 @@ class SensorReadingModel extends WateringSystemModelAbstract
 	public function getSensorReadings()
 	{
 		//send the status message
-		$this->sensor->sendMessage($pointer, 'status');
+		$this->sensor->sendMessage('status');
 		//read the reply
 		$response = $this->sensor->readMessage();
 		

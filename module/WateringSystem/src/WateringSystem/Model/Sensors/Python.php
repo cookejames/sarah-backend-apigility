@@ -26,9 +26,8 @@ class Python extends SensorAbstract
 	}
 	public function readMessage() 
 	{
-		$result = exec($this->script);
-		return $result;
+		$response = array();
+		exec($this->script, $response);
+		return trim(implode('', $response));
 	}
 }
-
-?>

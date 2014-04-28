@@ -1,9 +1,14 @@
 @sensor-readings-in-row : 4;
 .sensorReading {
-	width: (@body-width - @grid-gutter-width) / @sensor-readings-in-row;
+	width: (@body-width - (@grid-gutter-width * 4)) / @sensor-readings-in-row;
 	min-height: @line-height-computed * 5;
-	padding-left:  (@grid-gutter-width / 2);
-	padding-right: (@grid-gutter-width / 2);
+	margin: 0 (@grid-gutter-width / 2) (@grid-gutter-width / 2) (@grid-gutter-width / 2);
+/* 	margin-right: (@grid-gutter-width / 2); */
+/* 	margin-bottom: (@grid-gutter-width / 2); */
+	border: 1px solid @legend-border-color;
+	border-radius: @border-radius-large;
+	padding: @padding-base-vertical @padding-base-horizontal;
+	text-align: center;
 	.pull-left();
 	.title{
 		font-size: @font-size-large;
@@ -13,8 +18,8 @@
 	}	
 }
 .sensorReading:first-child {
-	padding-left: 0;
+	margin-left: 0;
 }
 .sensorReading:nth-child(@{sensor-readings-in-row}n+@{sensor-readings-in-row}) {
-	padding-right: 0;
+	margin-right: 0;
 }

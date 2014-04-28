@@ -164,7 +164,7 @@ class Sensor implements WateringSystemEntityInterface
 	public function getNewSensorValue()
 	{
 		$sensorValue = new SensorValue();
-		$sensorValue->setId($this->getId());
+		$sensorValue->setSensor($this);
 		return $sensorValue;
 	}
 	

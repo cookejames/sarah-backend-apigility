@@ -14,9 +14,9 @@ class CronController extends WateringSystemControllerAbstract
     		foreach ($readings as $name => $value) {
     			$sensor = $this->getSensorModel()->getSensorByName($name);
     			if ($sensor instanceof Sensor) {
-    				$value = $sensor->getNewSensorValue();
-    				$value->setValue($value);
-    				$this->saveEntity($value);
+    				$sensorValue = $sensor->getNewSensorValue();
+    				$sensorValue->setValue($value);
+    				$this->saveEntity($sensorValue);
     			}
     		}
     		$this->log('Read sensors: ' . json_encode($readings));

@@ -51,7 +51,7 @@ class File extends SensorAbstract
 			}
 			usleep(100);
 		}
-		$this->log('Read sensor message: ' . $message);
+
 		$this->close($pointer);
 		return $message;
 	}

@@ -40,6 +40,6 @@ class SensorModel extends WateringSystemModelAbstract
 	 */
 	public function getSensorByName($name)
 	{
-		return $this->getRepository()->findBy(array('name' => $name));
+		return $this->getRepository()->findOneBy(array('name' => $name));
 	}
 }

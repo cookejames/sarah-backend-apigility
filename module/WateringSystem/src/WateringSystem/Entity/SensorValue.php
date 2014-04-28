@@ -51,7 +51,7 @@ class SensorValue implements WateringSystemEntityInterface
 	/**
 	 * @param Sensor $sensor
 	 */
-	public function setSensor($sensor) {
+	public function setSensor(Sensor $sensor) {
 		$this->sensor = $sensor;
 		return $this;
 	}

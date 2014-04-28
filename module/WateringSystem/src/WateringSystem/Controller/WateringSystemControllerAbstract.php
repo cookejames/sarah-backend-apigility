@@ -5,13 +5,17 @@ namespace WateringSystem\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use WateringSystem\Model\SensorReadingModel;
 use Zend\Log\Logger;
+use Doctrine\ORM\EntityManager;
+use WateringSystem\src\WateringSystem\Model\SensorModel;
 
 abstract class WateringSystemControllerAbstract extends AbstractActionController
 {
+	protected $entityManager;
+	
 	/**
 	 * @return SensorReadingModel
 	 */
-	public function getSensorReadingModel()
+	protected function getSensorReadingModel()
 	{
 		return $this->getServiceLocator()->get('SensorReadingModel');
 	}
@@ -19,7 +23,7 @@ abstract class WateringSystemControllerAbstract extends AbstractActionController
 	/**
 	 * @return Logger
 	 */
-	public function getLogger()
+	protected function getLogger()
 	{
 		return $this->getServiceLocator()->get('logger');
 	}
@@ -29,9 +33,28 @@ abstract class WateringSystemControllerAbstract extends AbstractActionController
 	 * @param String $message
 	 * @param String $priority
 	 */
-	public function log($message, $priority = Logger::INFO)
+	protected function log($message, $priority = Logger::INFO)
 	{
 		$this->getLogger()->log($priority, $message);
 		return $this;
+	}
+	
+	/**
+	 * @return EntityManager
+	 */
+	protected function getEntityManager()
+	{
+		if (null === $this->entityManager) {
+			$this->entityManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+		}
+		return $this->entityManager;
+	}
+	
+	/**
+	 * @return SensorModel
+	 */
+	public function getSensorModel()
+	{
+		return $this->getServiceLocator()->get('SensorModel');
 	}
 }

@@ -5,6 +5,7 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use WateringSystem\Model\SensorReadingModel;
+use WateringSystem\Model\SensorModel;
 use WateringSystem\View\Helper\MessageHelper;
 use Zend\Log\Writer\Stream;
 use Zend\Log\Logger;
@@ -38,8 +39,8 @@ class Module
      */
     protected function setInvokables(ServiceLocatorInterface $serviceLocator)
     {
-//     	$serviceLocator
-//     		->setInvokableClass('SensorReadingModel', 'WateringSystem\Model\SensorReadingModel');
+    	$serviceLocator
+    		->setInvokableClass('SensorModel', 'WateringSystem\Model\SensorModel');
     	return $this;
     }
 

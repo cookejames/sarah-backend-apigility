@@ -1,11 +1,13 @@
 {
   "name" : "Watering System",
-   "version": "0.0.0",
-  "homepage": "https://github.com/james-jaynne/watering-system-php",
-  "description": "Automated watering system",
-  "license": "MIT",
+  "description" : "Automated watering system",
+  "version" : "0.0.0",
   "require" : {
     "php" : ">=5.3.3",
-    "zendframework/zendframework" : "2.3.*"
-  }
+    "zendframework/zendframework" : "2.3.*",
+    "doctrine/doctrine-orm-module" : "=0.8.0",
+    "doctrine/orm" : "=v2.4.1"
+  },
+  "license" : "MIT",
+  "homepage" : "https://github.com/james-jaynne/watering-system-php"
 }

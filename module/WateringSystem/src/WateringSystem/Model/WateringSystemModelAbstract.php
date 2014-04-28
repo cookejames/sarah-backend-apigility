@@ -5,6 +5,7 @@ namespace WateringSystem\Model;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Log\Logger;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Abstract class to carry out common model functions
@@ -14,6 +15,8 @@ use Zend\Log\Logger;
 abstract class WateringSystemModelAbstract implements ServiceLocatorAwareInterface
 {
 	protected $serviceLocator;
+	protected $entityManager;
+	protected $repository;
 	
 	/**
 	 * (non-PHPdoc)
@@ -39,10 +42,26 @@ abstract class WateringSystemModelAbstract implements ServiceLocatorAwareInterfa
 	 * @param String $message
 	 * @param String $priority
 	 */
-	public function log($message, $priority = Logger::INFO)
+	protected function log($message, $priority = Logger::INFO)
 	{
 		$logger = $this->getServiceLocator()->get('logger');
 		$logger->log($priority, $message);
 		return $this;
+	}
+	
+	/**
+	 * @return EntityManager
+	 */
+	protected function getEntityManager()
+	{
+		if (null === $this->entityManager) {
+			$this->entityManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+		}
+		return $this->entityManager;
+	}
+	
+	protected function getRepository()
+	{
+		return $this->getEntityManager()->getRepository($this->repository);
 	}
 }

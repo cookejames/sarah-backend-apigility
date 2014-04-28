@@ -8,6 +8,7 @@ use WateringSystem\Model\SensorReadingModel;
 use WateringSystem\View\Helper\MessageHelper;
 use Zend\Log\Writer\Stream;
 use Zend\Log\Logger;
+use WateringSystem\Model\Sensors\SensorAbstract;
 
 class Module
 {
@@ -52,15 +53,22 @@ class Module
     	$serviceLocator
     		->setFactory('SensorReadingModel', function($serviceLocator){
     			$config = $serviceLocator->get('Config');
+    			$sensor;
     			if (isset($config['sensor'])) {
     				$params = $config['sensor'];
-    			} else {
-    				$params = array();
+    				if (isset($params['class'])) {
+    					$class = $params['class'];
+    					$sensor = new $class($params);
+    				}
+    			} 
+    			if (($sensor instanceof SensorAbstract) == false) {
+    				throw new \Exception('Could not create a sensor from configuration');
     			}
-    			return new SensorReadingModel($params);
+    			return new SensorReadingModel($sensor);
     		})
     		->setFactory('logger', function($serviceLocator){
-    			$writer = new Stream('logs/log');
+    			$config = $serviceLocator->get('config');
+    			$writer = new Stream($config['logPath']);
     			$logger = new Logger();
     			$logger->addWriter($writer);
     			

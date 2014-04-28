@@ -12,5 +12,5 @@
  */
 
 return array(
-    // ...
+	'logPath' => 'logs/log',
 );

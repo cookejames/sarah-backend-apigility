@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="sensors")
  */
-class Sensor 
+class Sensor implements WateringSystemEntityInterface
 {
 	/** 
 	 * @ORM\Id @ORM\Column(type="integer")
@@ -26,8 +26,9 @@ class Sensor
 	private $units;
 	/** @ORM\Column(type="boolean") */
 	private $isRanged;
-	
+	/** @ORM\Column(type="float") */
 	private $rangeMin;
+	/** @ORM\Column(type="float") */
 	private $rangeMax;
 	
 	/** Valid value types */
@@ -155,5 +156,28 @@ class Sensor
 		$this->rangeMax = $rangeMax;
 		return $this;
 	}
-
+	
+	/**
+	 * Get a new sensor value with the id of this sensor
+	 * @return SensorValue
+	 */
+	public function getNewSensorValue()
+	{
+		$sensorValue = new SensorValue();
+		$sensorValue->setId($this->getId());
+		return $sensorValue;
+	}
+	
+	/**
+	 * Get the range  (rangeMax - rangeMin)
+	 * @return double|null
+	 */
+	public function getRange()
+	{
+		if ($this->getIsRanged() && !is_null($this->getRangeMin()) && !is_null($this->getRangeMax())) {
+			return (double)$this->getRangeMax() - (double)$this->getRangeMin(); 
+		}
+		
+		return null;
+	}
 }

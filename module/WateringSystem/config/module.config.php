@@ -67,10 +67,14 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'WateringSystem\Controller\Index' => 'WateringSystem\Controller\IndexController'
+            'WateringSystem\Controller\Index' => 'WateringSystem\Controller\IndexController',
+        	'WateringSystem\Controller\Cron' => 'WateringSystem\Controller\CronController',
         ),
     ),
     'view_manager' => array(
+    	'strategies' => array(
+    		'ViewJsonStrategy'
+    	),
         'display_not_found_reason' => true,
         'display_exceptions'       => true,
         'doctype'                  => 'HTML5',

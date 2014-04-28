@@ -8,6 +8,8 @@ use Zend\Log\Logger;
 use Doctrine\ORM\EntityManager;
 use WateringSystem\Model\SensorValueModel;
 use WateringSystem\Model\SensorModel;
+use WateringSystem;
+use WateringSystem\Entity\WateringSystemEntityInterface;
 
 abstract class WateringSystemControllerAbstract extends AbstractActionController
 {
@@ -65,5 +67,17 @@ abstract class WateringSystemControllerAbstract extends AbstractActionController
 	protected function getSensorValueModel()
 	{
 		return $this->getServiceLocator()->get('SensorValueModel');
+	}
+	
+	/**
+	 * Persist and flush an entity
+	 * @param WateringSystemEntityInterface $entity
+	 * @return \WateringSystem\Controller\WateringSystemControllerAbstract
+	 */
+	protected function saveEntity(WateringSystemEntityInterface $entity)
+	{
+		$this->getEntityManager()->persist($entity);
+		$this->getEntityManager()->flush();
+		return $this;
 	}
 }

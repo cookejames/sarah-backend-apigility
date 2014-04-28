@@ -6,10 +6,12 @@ use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use WateringSystem\Model\SensorReadingModel;
 use WateringSystem\Model\SensorModel;
+use WateringSystem\Model\SensorValueModel;
 use WateringSystem\View\Helper\MessageHelper;
 use Zend\Log\Writer\Stream;
 use Zend\Log\Logger;
 use WateringSystem\Model\Sensors\SensorAbstract;
+use WateringSystem\View\Helper\SensorValueHelper;
 
 class Module
 {
@@ -40,6 +42,7 @@ class Module
     protected function setInvokables(ServiceLocatorInterface $serviceLocator)
     {
     	$serviceLocator
+    		->setInvokableClass('SensorValueModel', 'WateringSystem\Model\SensorValueModel')
     		->setInvokableClass('SensorModel', 'WateringSystem\Model\SensorModel');
     	return $this;
     }
@@ -80,11 +83,15 @@ class Module
     
     public function getViewHelperConfig()
     {
+    	//set customer view helpers
 		return array (
 			'factories' => array (
 				'Messages' => function ($sm) {
 					return new MessageHelper($sm);
-				}
+				},
+				'SensorValue' => function ($sm) {
+					return new SensorValueHelper($sm);
+				},
 			)
     	);
     }

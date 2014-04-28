@@ -22,4 +22,14 @@ class SensorValueModel extends WateringSystemModelAbstract
 	{
 		return $this->getRepository()->findAll();
 	}
+	
+	/**
+	 * Get the last value for a sensor
+	 * @param int $sensorId
+	 */
+	public function getLastValue($sensorId)
+	{
+		return $this->getRepository()->findOneBy(array('sensor' => $sensorId), array('date' => 'DESC'));
+		
+	}
 }

@@ -6,7 +6,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use WateringSystem\Model\SensorReadingModel;
 use Zend\Log\Logger;
 use Doctrine\ORM\EntityManager;
-use WateringSystem\src\WateringSystem\Model\SensorModel;
+use WateringSystem\Model\SensorValueModel;
+use WateringSystem\Model\SensorModel;
 
 abstract class WateringSystemControllerAbstract extends AbstractActionController
 {
@@ -53,8 +54,16 @@ abstract class WateringSystemControllerAbstract extends AbstractActionController
 	/**
 	 * @return SensorModel
 	 */
-	public function getSensorModel()
+	protected function getSensorModel()
 	{
 		return $this->getServiceLocator()->get('SensorModel');
+	}
+	
+	/**
+	 * @return SensorValueModel
+	 */
+	protected function getSensorValueModel()
+	{
+		return $this->getServiceLocator()->get('SensorValueModel');
 	}
 }

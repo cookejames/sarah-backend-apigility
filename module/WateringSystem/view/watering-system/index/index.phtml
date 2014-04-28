@@ -1,12 +1,12 @@
 <h1>Sensor Readings</h1>
 
-<?php if ($this->sensorReadings) : ?>
+<?php if ($this->sensors) : ?>
 	<dl>
-		<?php foreach ($this->sensorReadings as $sensor => $value) : ?>
-		<dt><?php echo $this->escapehtml($sensor); ?></dt>
-			<dd><?php echo $this->escapehtml($value); ?></dd>
+		<?php foreach ($this->sensors as $sensor) : ?>
+		<dt><?php echo $this->escapehtml($sensor->getDescription()); ?></dt>
+			<dd><?php echo $this->escapehtml($this->SensorValue($sensor)->getValue() . $sensor->getUnits()); ?></dd>
 		<?php endforeach; ?>
 	</dl>
 <?php else : ?>
-	<p>Sensors offline</p>
+	<p>No sensor values found</p>
 <?php endif; ?>

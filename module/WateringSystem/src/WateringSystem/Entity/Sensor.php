@@ -32,6 +32,8 @@ class Sensor implements WateringSystemEntityInterface
 	private $rangeMax;
 	/** @ORM\Column(type="float") */
 	private $scalingFactor;
+	/** @ORM\Column(type="boolean") */
+	private $isEnabled;
 	
 	/** Valid value types */
 	const TYPE_BOOLEAN	= 'boolean';
@@ -200,5 +202,20 @@ class Sensor implements WateringSystemEntityInterface
 		$this->scalingFactor = $scalingFactor;
 		return $this;
 	}
+	/**
+	 * @return the $isEnabled
+	 */
+	public function getIsEnabled() {
+		return $this->isEnabled;
+	}
+
+	/**
+	 * @param field_type $isEnabled
+	 */
+	public function setIsEnabled($isEnabled) {
+		$this->isEnabled = $isEnabled;
+		return $this;
+	}
+
 
 }

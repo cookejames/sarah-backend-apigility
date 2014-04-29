@@ -4,6 +4,7 @@ namespace WateringSystem\Model;
 
 use WateringSystem\Model\WateringSystemModelAbstract;
 use WateringSystem\Entity\SensorValue;
+use Doctrine\ORM\Query\Expr;
 
 /**
  * Get details about sensor values
@@ -34,7 +35,7 @@ class SensorValueModel extends WateringSystemModelAbstract
 	}
 	
 	/**
-	 * Get sensor values since this date
+	 * Get enabled sensor values since this date
 	 * @param \DateTime $date
 	 * @return SensorValue[]
 	 */
@@ -44,8 +45,10 @@ class SensorValueModel extends WateringSystemModelAbstract
 		$result = $queryBuilder
 			->select('sensorValues')
 			->from($this->repository, 'sensorValues')
-			->where($queryBuilder->expr()->gte('sensorValues.date', ':date'))
-			->setParameter(':date', $date)
+			->innerJoin('WateringSystem\Entity\Sensor', 'sensors', 'WITH', 'sensorValues.sensor = sensors.id')
+			->andWhere($queryBuilder->expr()->gte('sensorValues.date', ':date'))
+			->andWhere($queryBuilder->expr()->eq('sensors.isEnabled', ':enabled'))
+			->setParameters(array(':enabled' => true, ':date' => $date))
 			->orderBy('sensorValues.date', $order);
 
 		$query = $queryBuilder->getQuery();

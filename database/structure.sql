@@ -13,10 +13,13 @@ CREATE TABLE IF NOT EXISTS `sensors` (
   `rangeMin` float DEFAULT NULL,
   `rangeMax` float DEFAULT NULL,
   `scalingFactor` float DEFAULT '1',
+  `isEnabled` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `Index 2` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Data exporting was unselected.
 
 
 CREATE TABLE IF NOT EXISTS `sensorValues` (
@@ -30,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `sensorValues` (
   CONSTRAINT `FK_sensorValues_sensors` FOREIGN KEY (`sensor`) REFERENCES `sensors` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Data exporting was unselected.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

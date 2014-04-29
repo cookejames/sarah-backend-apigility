@@ -4,7 +4,7 @@
 }
 .sensorReading {
 	width: (@body-width - (@grid-gutter-width * 4)) / @sensor-readings-in-row;
-	min-height: @line-height-computed * 5;
+	min-height: @line-height-computed * 6;
 	margin: 0 (@grid-gutter-width / 2) (@grid-gutter-width / 2) (@grid-gutter-width / 2);
 	border: 1px solid @legend-border-color;
 	border-radius: @border-radius-large;
@@ -16,7 +16,15 @@
 		font-weight: bold;
 	}
 	.value {
-	}	
+	}
+	.time {
+		color: @gray-light;
+		overflow: hidden;
+		padding-bottom: @padding-small-horizontal;
+	}
+	.progress {
+		margin-bottom: 0;
+	}
 }
 .sensorReading:first-child {
 	margin-left: 0;

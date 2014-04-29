@@ -13,6 +13,7 @@ use Zend\Log\Logger;
 use WateringSystem\Model\Sensors\SensorAbstract;
 use WateringSystem\View\Helper\SensorValueHelper;
 use WateringSystem\View\Helper\SensorToJsonHelper;
+use WateringSystem\View\Helper\FuzzyDateHelper;
 
 class Module
 {
@@ -95,6 +96,9 @@ class Module
 				},
 				'SensorToJson' => function ($sm) {
 					return new SensorToJsonHelper($sm);
+				},
+				'FuzzyDate' => function ($sm) {
+					return new FuzzyDateHelper($sm);
 				},
 			)
     	);

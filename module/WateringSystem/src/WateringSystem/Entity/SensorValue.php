@@ -72,7 +72,7 @@ class SensorValue implements WateringSystemEntityInterface
 	}
 
 	/**
-	 * @return the $date
+	 * @return \DateTime
 	 */
 	public function getDate() {
 		return $this->date;

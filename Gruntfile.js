@@ -1,31 +1,44 @@
 //Gruntfile
 module.exports = function(grunt) {
-
 	// Initializing the configuration object
 	grunt.initConfig({
 		// Task configuration
-		concat: {
-			options: {
-				separator: ';',
-			},
-			development: {
-				src: [
-				      'bower_components/jquery/dist/jquery.js',
-				      'bower_components/bootstrap/dist/js/bootstrap.js',
-				      'assets/js/**/*.js'
-	          ],
-	          dest: 'public/js/site.js',
-	        },
-		},
 		less: {
 			development: {
 				options: {
 					compress: true,  //minifying the result
 				},
 				files: {
-	              "public/css/site.css":"assets/less/site.less",
+					"public/css/site.css":"assets/less/site.less",
 				}
 	        }
+		},
+		cssmin: {
+			combine: {
+				files: {
+					'public/css/site.css': [
+                        'assets/css/**/*.css',
+                        'bower_components/rickshaw/rickshaw.css',
+                        'public/css/site.css',
+                    ]
+				}
+			}
+		},
+		concat: {
+			options: {
+				separator: ';',
+			},
+			development: {
+				src: [
+				    'bower_components/jquery/dist/jquery.js',
+				    'bower_components/bootstrap/dist/js/bootstrap.js',
+				    'bower_components/rickshaw/vendor/d3.min.js',
+				    'bower_components/rickshaw/vendor/d3.layout.min.js',
+				    'bower_components/rickshaw/rickshaw.js',
+				    'assets/js/**/*.js'
+	          ],
+	          dest: 'public/js/site.js',
+	        },
 		},
 		uglify: {
 			options: {
@@ -68,7 +81,16 @@ module.exports = function(grunt) {
 	        	files: [
 	        	        'assets/less/**/*.less'
     	        ], //watched files
-	        	tasks: ['less'], //tasks to run
+	        	tasks: ['less', 'cssmin'], //tasks to run
+	        	options: {
+	        		livereload: false //reloads the browser
+	            }
+	        },
+	        css: {
+	        	files: [
+	        	        'assets/css/**/*.css'
+    	        ], //watched files
+	        	tasks: ['less', 'cssmin'], //tasks to run
 	        	options: {
 	        		livereload: false //reloads the browser
 	            }
@@ -83,7 +105,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-phpunit');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	// Task definition
-	grunt.registerTask('default', ['concat', 'less', 'uglify', 'copy']);
+	grunt.registerTask('default', ['concat', 'less', 'cssmin', 'uglify', 'copy']);
 };

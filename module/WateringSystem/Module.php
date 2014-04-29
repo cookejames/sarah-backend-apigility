@@ -12,6 +12,7 @@ use Zend\Log\Writer\Stream;
 use Zend\Log\Logger;
 use WateringSystem\Model\Sensors\SensorAbstract;
 use WateringSystem\View\Helper\SensorValueHelper;
+use WateringSystem\View\Helper\SensorToJsonHelper;
 
 class Module
 {
@@ -91,6 +92,9 @@ class Module
 				},
 				'SensorValue' => function ($sm) {
 					return new SensorValueHelper($sm);
+				},
+				'SensorToJson' => function ($sm) {
+					return new SensorToJsonHelper($sm);
 				},
 			)
     	);

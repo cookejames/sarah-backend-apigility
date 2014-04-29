@@ -1,13 +1,21 @@
 <h1>Sensor Readings</h1>
 
-<?php if ($this->sensors) : ?>
-<div>
+<?php if ($this->sensors && $this->sensorValues) : ?>
+<div class="sensorReadings">
 <?php
+	//output the latest sensor values
 	foreach ($this->sensors as $sensor) {
 		echo $this->partial('watering-system/partials/sensordisplay.phtml', array('sensor' => $sensor));
 	} 
 ?>
 </div>
+<?php
+	//output the graph 
+	echo $this->partial(
+			'watering-system/partials/sensorgraph.phtml', 
+			array('sensors' => $this->sensors, 'sensorValues' => $this->sensorValues)
+	); 
+?>
 <?php else : ?>
 	<p>No sensor values found</p>
 <?php endif; ?>

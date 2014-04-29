@@ -1,10 +1,11 @@
 @sensor-readings-in-row : 4;
+.sensorReadings {
+	overflow: auto;
+}
 .sensorReading {
 	width: (@body-width - (@grid-gutter-width * 4)) / @sensor-readings-in-row;
 	min-height: @line-height-computed * 5;
 	margin: 0 (@grid-gutter-width / 2) (@grid-gutter-width / 2) (@grid-gutter-width / 2);
-/* 	margin-right: (@grid-gutter-width / 2); */
-/* 	margin-bottom: (@grid-gutter-width / 2); */
 	border: 1px solid @legend-border-color;
 	border-radius: @border-radius-large;
 	padding: @padding-base-vertical @padding-base-horizontal;

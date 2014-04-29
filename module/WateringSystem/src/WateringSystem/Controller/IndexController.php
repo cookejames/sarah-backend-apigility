@@ -7,6 +7,14 @@ class IndexController extends WateringSystemControllerAbstract
 {
     public function indexAction()
     {
-        return new ViewModel(array('sensors' => $this->getSensorModel()->getSensors()));
+    	$date = new \DateTime();
+    	$date->sub(new \DateInterval('P1D'));
+
+        return new ViewModel(
+        		array(
+        				'sensors' => $this->getSensorModel()->getSensors(),
+        				'sensorValues' => $this->getSensorValueModel()->getSensorValuesSince($date, 'ASC'),
+        		)
+        );
     }
 }

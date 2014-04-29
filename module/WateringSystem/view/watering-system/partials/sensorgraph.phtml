@@ -1,0 +1,16 @@
+<?php
+	$sensors = $this->sensors;
+	$sensorValues = $this->sensorValues;
+	if (!is_array($sensorValues) || !is_array($sensors)) return;
+	
+	//format the sensor values as json for the graph
+	$this->headscript()->appendScript('SENSOR_VALUES = ' . $this->sensorToJson($sensorValues))
+					   ->appendFile($this->basePath() . '/js/partials/sensorgraph.js');
+?>
+<div id="sensorGraph">
+	<div class="chart rickshaw_graph"></div>
+	<div class="legend_container">
+		<div class="legend rickshaw_legend"></div>
+	</div>
+	<div id="slider"></div>
+</div>

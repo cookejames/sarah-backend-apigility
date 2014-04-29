@@ -6,6 +6,8 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Log\Logger;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Abstract class to carry out common model functions
@@ -60,8 +62,19 @@ abstract class WateringSystemModelAbstract implements ServiceLocatorAwareInterfa
 		return $this->entityManager;
 	}
 	
+	/**
+	 * @return EntityRepository
+	 */
 	protected function getRepository()
 	{
 		return $this->getEntityManager()->getRepository($this->repository);
+	}
+	
+	/**
+	 * @return QueryBuilder
+	 */
+	protected function createQueryBuilder()
+	{
+		return $this->getEntityManager()->createQueryBuilder();
 	}
 }

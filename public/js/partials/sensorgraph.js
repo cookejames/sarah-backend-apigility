@@ -34,4 +34,13 @@ $('document').ready(function() {
 		graph: graph
 	} );
 	axes.render();
+	
+	//make graph width responsive
+	$(window).on('resize', function(){
+		var width = $('#sensorGraph').parent().width();
+		graph.configure({
+			width: width,
+		});
+		graph.render();
+	});
 });

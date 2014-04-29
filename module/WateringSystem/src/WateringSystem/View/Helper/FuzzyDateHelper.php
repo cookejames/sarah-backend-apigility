@@ -16,7 +16,7 @@ class FuzzyDateHelper extends AbstractHelper
 		$now = new \DateTime();
 		$diff = $now->diff($date);
 		
-		$minutes = $diff->h * 60 + $diff->m;
+		$minutes = $diff->h * 60 + $diff->i;
 		$hours = $diff->h;
 		
 		if ($minutes == 0) {

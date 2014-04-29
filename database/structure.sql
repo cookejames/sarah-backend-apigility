@@ -12,10 +12,12 @@ CREATE TABLE IF NOT EXISTS `sensors` (
   `isRanged` tinyint(4) NOT NULL,
   `rangeMin` float DEFAULT NULL,
   `rangeMax` float DEFAULT NULL,
+  `scalingFactor` float DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `Index 2` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE IF NOT EXISTS `sensorValues` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

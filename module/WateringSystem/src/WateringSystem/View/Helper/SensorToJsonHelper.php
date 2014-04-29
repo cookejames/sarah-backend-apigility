@@ -14,7 +14,7 @@ class SensorToJsonHelper extends AbstractHelper
 	 * @param Sensor[] $sensor
 	 * @param SensorValue[] $sensorValues
 	 */
-	public function __invoke(array $sensorValues)
+	public function __invoke(array $sensorValues, $useScaledValues = false)
 	{
 		$data = array();
 		foreach ($sensorValues as $sensorValue) {
@@ -26,9 +26,10 @@ class SensorToJsonHelper extends AbstractHelper
 					);
 				}
 				
+				$value = ($useScaledValues) ? $sensorValue->getScaledValue() : $sensorValue->getValue();
 				$data[$sensorValue->getSensor()->getId()]['data'][] = array(
 					'x' => $sensorValue->getDate()->getTimestamp(),
-					'y' => (int)$sensorValue->getValue(),
+					'y' => (int) $value,
 				);
 			}
 		}

@@ -30,9 +30,15 @@ class Sensor implements WateringSystemEntityInterface
 	private $rangeMin;
 	/** @ORM\Column(type="float") */
 	private $rangeMax;
+	/** @ORM\Column(type="float") */
+	private $scalingFactor;
 	
 	/** Valid value types */
-	public static $VALUE_TYPES = array('float','int','boolean','string');
+	const TYPE_BOOLEAN	= 'boolean';
+	const TYPE_FLOAT	= 'float';
+	const TYPE_INT		= 'int';
+	const TYPE_STRING	= 'string';
+	public static $VALUE_TYPES = array(self::TYPE_BOOLEAN, self::TYPE_FLOAT, self::TYPE_INT, self::TYPE_STRING);
 	
 	/**
 	 * @return the $id
@@ -180,4 +186,19 @@ class Sensor implements WateringSystemEntityInterface
 		
 		return null;
 	}
+	/**
+	 * @return the $scalingFactor
+	 */
+	public function getScalingFactor() {
+		return $this->scalingFactor;
+	}
+
+	/**
+	 * @param field_type $scalingFactor
+	 */
+	public function setScalingFactor($scalingFactor) {
+		$this->scalingFactor = $scalingFactor;
+		return $this;
+	}
+
 }

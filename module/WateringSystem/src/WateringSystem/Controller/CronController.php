@@ -4,9 +4,19 @@ namespace WateringSystem\Controller;
 use Zend\View\Model\JsonModel;
 use WateringSystem\Entity\Sensor;
 use WateringSystem\Entity\SensorValue;
+use Zend\Mvc\MvcEvent;
 
 class CronController extends WateringSystemControllerAbstract
 {
+	public function onDispatch(MvcEvent $e)
+	{
+		if ($this->getRequest()->getServer()->get('REMOTE_ADDR') != '127.0.0.1') {
+			$this->getResponse()->setStatusCode(404);
+			return;
+		}
+		return parent::onDispatch($e);
+	}
+	
     public function readSensorsAction()
     {
     	try {

@@ -13,7 +13,7 @@ if ($sensor instanceof Sensor == false) return;
 	<?php 
 		$sensorValue = $this->sensorvalue($sensor);
 		if ($sensorValue instanceof SensorValue) {
-			echo $this->escapehtml($sensorValue->getValue() . $sensor->getUnits());
+			echo $this->escapehtml($sensorValue->getCalibratedValue() . $sensor->getUnits());
 		} else {
 			echo '--';
 		}
@@ -26,7 +26,7 @@ if ($sensor instanceof Sensor == false) return;
 	<div class="progress progress-striped">
 		<?php 
 		$r = $sensor->getRange();
-			$percent = (int) ($sensorValue->getValue() / $sensor->getRange() * 100);
+			$percent = (int) ($sensorValue->getCalibratedValue() / $sensor->getRange() * 100);
 		?>
 		<div class="progress-bar progress-bar-info" style="width: <?php echo $percent?>%"></div>
 	</div>

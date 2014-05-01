@@ -26,7 +26,7 @@ class SensorToJsonHelper extends AbstractHelper
 					);
 				}
 				
-				$value = ($useScaledValues) ? $sensorValue->getScaledValue() : $sensorValue->getValue();
+				$value = ($useScaledValues) ? $sensorValue->getScaledValue() : $sensorValue->getCalibratedValue();
 				$data[$sensorValue->getSensor()->getId()]['data'][] = array(
 					'x' => $sensorValue->getDate()->getTimestamp(),
 					'y' => (int) $value,

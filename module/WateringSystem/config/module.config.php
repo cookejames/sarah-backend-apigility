@@ -17,33 +17,22 @@ return array(
             // The following is a route to simplify getting started creating
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
-            'application' => array(
-                'type'    => 'Literal',
-                'options' => array(
-                    'route'    => '/application',
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'WateringSystem\Controller',
-                        'controller'    => 'Index',
-                        'action'        => 'index',
-                    ),
-                ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type'    => 'Segment',
-                        'options' => array(
-                            'route'    => '/[:controller[/:action]]',
-                            'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
-                            ),
-                        ),
-                    ),
-                ),
-            ),
+            // using the path /:controller/:action
+			'default' => array(
+				'type' => 'segment',
+				'options' => array(
+					'route' => '/:controller/[:action]',
+					'constraints' => array(
+						'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+						'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
+					),
+					'defaults' => array(
+						'__NAMESPACE__' => 'WateringSystem\Controller',
+						'controller' => 'Index',
+						'action' => 'index'
+					)
+				)
+			),
         ),
     ),
     'service_manager' => array(
@@ -69,6 +58,7 @@ return array(
         'invokables' => array(
             'WateringSystem\Controller\Index' => 'WateringSystem\Controller\IndexController',
         	'WateringSystem\Controller\Cron' => 'WateringSystem\Controller\CronController',
+        	'WateringSystem\Controller\Api' => 'WateringSystem\Controller\ApiController',
         ),
     ),
     'view_manager' => array(

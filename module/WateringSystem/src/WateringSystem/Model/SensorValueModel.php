@@ -36,19 +36,20 @@ class SensorValueModel extends WateringSystemModelAbstract
 	
 	/**
 	 * Get enabled sensor values since this date
-	 * @param \DateTime $date
+	 * @param \DateTime $from
 	 * @return SensorValue[]
 	 */
-	public function getSensorValuesSince(\DateTime $date, $order = 'DESC')
+	public function getSensorValuesBetween(\DateTime $from, \DateTime $to, $order = 'DESC')
 	{
 		$queryBuilder = $this->createQueryBuilder();
 		$result = $queryBuilder
 			->select('sensorValues')
 			->from($this->repository, 'sensorValues')
 			->innerJoin('WateringSystem\Entity\Sensor', 'sensors', 'WITH', 'sensorValues.sensor = sensors.id')
-			->andWhere($queryBuilder->expr()->gte('sensorValues.date', ':date'))
+			->andWhere($queryBuilder->expr()->gte('sensorValues.date', ':from'))
+			->andWhere($queryBuilder->expr()->lt('sensorValues.date', ':to'))
 			->andWhere($queryBuilder->expr()->eq('sensors.isEnabled', ':enabled'))
-			->setParameters(array(':enabled' => true, ':date' => $date))
+			->setParameters(array(':enabled' => true, ':from' => $from, ':to' => $to))
 			->orderBy('sensorValues.date', $order);
 
 		$query = $queryBuilder->getQuery();

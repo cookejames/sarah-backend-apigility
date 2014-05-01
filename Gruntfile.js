@@ -1,5 +1,6 @@
 //Gruntfile
 module.exports = function(grunt) {
+	var jqueryUiTheme = 'cupertino';
 	// Initializing the configuration object
 	grunt.initConfig({
 		// Task configuration
@@ -18,6 +19,7 @@ module.exports = function(grunt) {
 				files: {
 					'public/css/site.css': [
                         'assets/css/**/*.css',
+                        'bower_components/jquery-ui/themes/' + jqueryUiTheme + '/jquery-ui.css',
                         'bower_components/rickshaw/rickshaw.css',
                         'public/css/site.css',
                     ]
@@ -31,6 +33,7 @@ module.exports = function(grunt) {
 			development: {
 				src: [
 				    'bower_components/jquery/dist/jquery.js',
+				    'bower_components/jquery-ui/ui/jquery-ui.js',
 				    'bower_components/bootstrap/dist/js/bootstrap.js',
 				    'bower_components/rickshaw/vendor/d3.min.js',
 				    'bower_components/rickshaw/vendor/d3.layout.min.js',
@@ -63,6 +66,14 @@ module.exports = function(grunt) {
 				        	cwd: 'bower_components/bootstrap/dist/fonts/',
 				        	src: '**',
 				        	dest: 'public/fonts/bootstrap/'
+		        		},
+				        //copy jquery-ui images
+				        {
+				        	expand: true,
+				        	flatten: true,
+				        	cwd: 'bower_components/jquery-ui/themes/' + jqueryUiTheme + '/images/',
+				        	src: '**',
+				        	dest: 'public/css/images/'
 		        		},
 		        ]
 			},

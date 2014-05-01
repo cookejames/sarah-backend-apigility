@@ -11,10 +11,7 @@
 </div>
 <?php
 	//output the graph 
-	echo $this->partial(
-			'watering-system/partials/sensorgraph.phtml', 
-			array('sensors' => $this->sensors, 'sensorValues' => $this->sensorValues)
-	); 
+	echo $this->partial('watering-system/partials/sensorgraph.phtml', array('sensorValues' => $this->sensorValues)); 
 ?>
 <?php else : ?>
 	<p>No sensor values found</p>

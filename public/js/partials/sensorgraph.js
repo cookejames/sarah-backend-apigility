@@ -30,14 +30,51 @@ $('document').ready(function() {
 		legend: legend
 	} );
 
-	var axes = new Rickshaw.Graph.Axis.Time( {
+	var slider = new Rickshaw.Graph.RangeSlider( {
+		graph: graph,
+		element: $('#sensorGraph .slider')[0]
+	} );
+
+	var axis = new Rickshaw.Graph.Axis.Time( {
 		graph: graph
 	} );
-	axes.render();
+	axis.render();
+	
+	//fetch more results on click
+	$('#sensorGraph .fetchResults').click(function(){
+		var self = this;
+		$(self).hide();
+		$.post(
+			'/api/fetch-sensor-values',
+			{
+				before: FIRST_VALUE
+			},
+			function(data, textStatus, jqXHR){
+				if (data.result && data.result.length > 0) {
+					//show the button if we have a valid result
+					$(self).show();
+					//iterate through the result and prepend our graph data
+					$.each(data.result, function(index, sensor){
+						$.each(SENSOR_VALUES, function(index, graphSensor){
+							if (sensor.name == graphSensor.name) {
+								graphSensor.data = sensor.data.concat(graphSensor.data);
+							}
+						});
+					});
+					///update the first value we have
+					FIRST_VALUE = data.result[0].data[0].x_date;
+					//update the graph
+					graph.update();
+				}
+			},
+			'json'
+		);
+	});
 	
 	//make graph width responsive
 	$(window).on('resize', function(){
 		var width = $('#sensorGraph').parent().width();
+		$('#sensorGraph .slider').width(width);
 		graph.configure({
 			width: width,
 		});

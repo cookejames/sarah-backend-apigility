@@ -14,6 +14,7 @@ use WateringSystem\Model\Sensors\SensorAbstract;
 use WateringSystem\View\Helper\SensorValueHelper;
 use WateringSystem\View\Helper\SensorToJsonHelper;
 use WateringSystem\View\Helper\FuzzyDateHelper;
+use WateringSystem\Model\PumpModel;
 
 class Module
 {
@@ -74,6 +75,21 @@ class Module
     				throw new \Exception('Could not create a sensor from configuration');
     			}
     			return new SensorReadingModel($sensor);
+    		})
+    		->setFactory('PumpModel', function($serviceLocator){
+    			$config = $serviceLocator->get('Config');
+    			$sensor;
+    			if (isset($config['sensor'])) {
+    				$params = $config['sensor'];
+    				if (isset($params['class'])) {
+    					$class = $params['class'];
+    					$sensor = new $class($params);
+    				}
+    			}
+    			if (($sensor instanceof SensorAbstract) == false) {
+    				throw new \Exception('Could not create a sensor from configuration');
+    			}
+    			return new PumpModel($sensor);
     		})
     		->setFactory('logger', function($serviceLocator){
     			$config = $serviceLocator->get('config');

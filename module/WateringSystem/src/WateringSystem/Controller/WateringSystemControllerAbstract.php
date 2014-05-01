@@ -10,6 +10,7 @@ use WateringSystem\Model\SensorValueModel;
 use WateringSystem\Model\SensorModel;
 use WateringSystem;
 use WateringSystem\Entity\WateringSystemEntityInterface;
+use WateringSystem\Model\PumpModel;
 
 abstract class WateringSystemControllerAbstract extends AbstractActionController
 {
@@ -79,5 +80,13 @@ abstract class WateringSystemControllerAbstract extends AbstractActionController
 		$this->getEntityManager()->persist($entity);
 		$this->getEntityManager()->flush();
 		return $this;
+	}
+	
+	/**
+	 * @return PumpModel
+	 */
+	protected function getPumpModel()
+	{
+		return $this->getServiceLocator()->get('PumpModel');
 	}
 }

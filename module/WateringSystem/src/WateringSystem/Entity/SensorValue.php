@@ -57,7 +57,7 @@ class SensorValue implements WateringSystemEntityInterface
 	}
 
 	/**
-	 * @return the $value
+	 * @return boolean|float|int|string
 	 */
 	public function getValue() {
 		switch ($this->getSensor()->getValueType()) {
@@ -70,17 +70,31 @@ class SensorValue implements WateringSystemEntityInterface
 			default:
 				return $this->value;
 		}
+	}
+	
+	/**
+	 * Get values with any calibration added
+	 * @return boolean|float|int|string
+	 */
+	public function getCalibratedValue()
+	{
+		$value = $this->getValue();
+		$calibration = $this->getSensor()->getCalibration();
+		if (is_numeric($calibration) && (is_float($value) || is_int($value))) {
+			$value += $calibration;
+		}
 		
+		return $value;
 	}
 	
 	/**
 	 * Get the value scaled according to the scaling factor
-	 * @return number
+	 * @return boolean|float|int|string
 	 */
 	public function getScaledValue() {
 		if ($this->getSensor()->getValueType() == Sensor::TYPE_FLOAT 
 			|| $this->getSensor()->getValueType() == Sensor::TYPE_INT) {
-			$value = $this->getValue();
+			$value = $this->getCalibratedValue();
 			$value *= $this->getSensor()->getScalingFactor();
 			
 			if ($this->getSensor()->getValueType() == Sensor::TYPE_INT) {

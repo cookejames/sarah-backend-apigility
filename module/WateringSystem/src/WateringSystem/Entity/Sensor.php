@@ -32,6 +32,8 @@ class Sensor implements WateringSystemEntityInterface
 	private $rangeMax;
 	/** @ORM\Column(type="float") */
 	private $scalingFactor;
+	/** @ORM\Column(type="float") */
+	private $calibration;
 	/** @ORM\Column(type="boolean") */
 	private $isEnabled;
 	
@@ -216,6 +218,21 @@ class Sensor implements WateringSystemEntityInterface
 		$this->isEnabled = $isEnabled;
 		return $this;
 	}
+	/**
+	 * @return the $calibration
+	 */
+	public function getCalibration() {
+		return $this->calibration;
+	}
+
+	/**
+	 * @param field_type $calibration
+	 */
+	public function setCalibration($calibration) {
+		$this->calibration = $calibration;
+		return $this;
+	}
+
 
 
 }

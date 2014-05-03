@@ -3,9 +3,12 @@ namespace WateringSystem\Controller;
 
 use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
+use WateringSystem\Entity\Sensor;
+use WateringSystem\Entity\SensorValue;
 
 class ApiController extends WateringSystemControllerAbstract
 {
+	protected $pumpSensorName = 'p1';
 	/**
 	 * Get the sensor values for 1 day before the specified date
 	 * @param 'before' format 'Y-m-d H:i:s'
@@ -48,6 +51,13 @@ class ApiController extends WateringSystemControllerAbstract
     	if ($request->isPost() && $request->getPost('pumpon', false)) {
     		try {
 	    		$this->getPumpModel()->turnPumpOn();
+	    		$pump = $this->getSensorModel()->getSensorByName($this->pumpSensorName);
+	    		if ($pump instanceof Sensor) {
+	    			$value = new SensorValue();
+	    			$value->setValue(true)
+	    				  ->setSensor($pump);
+	    			$this->saveEntity($value);
+	    		}
 	    		return new JsonModel(array('result' => true));
     		} catch (\Exception $e) {
     			return new JsonModel(array('result' => false));

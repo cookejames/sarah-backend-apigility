@@ -20,7 +20,7 @@ if ($sensor instanceof Sensor == false) return;
 	?>
 	</div>
 	<div class="time">
-		<small><?php echo $this->fuzzyDate($sensorValue->getDate());?></small>
+		<small><?php if ($sensorValue instanceof SensorValue) { echo $this->fuzzyDate($sensorValue->getDate()); }?></small>
 	</div>
 	<?php if ($sensor->getIsRanged()) : ?>
 	<div class="progress progress-striped">

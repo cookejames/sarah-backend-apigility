@@ -13,7 +13,14 @@ if ($sensor instanceof Sensor == false) return;
 	<?php 
 		$sensorValue = $this->sensorvalue($sensor);
 		if ($sensorValue instanceof SensorValue) {
-			echo $this->escapehtml($sensorValue->getCalibratedValue() . $sensor->getUnits());
+			switch ($sensorValue->getSensor()->getValueType()) {
+				case Sensor::TYPE_BOOLEAN :
+					echo $sensorValue->getValue() ? 'On' : 'Off';
+					break;
+				default:
+					echo $this->escapehtml($sensorValue->getCalibratedValue() . $sensor->getUnits());
+					break;
+			}
 		} else {
 			echo '--';
 		}

@@ -1,4 +1,5 @@
 @sensor-readings-in-row : 4;
+@sensor-reading-second-row: @sensor-readings-in-row+1;
 .sensorReadings {
 	overflow: auto;
 }
@@ -31,4 +32,7 @@
 }
 .sensorReading:nth-child(@{sensor-readings-in-row}n+@{sensor-readings-in-row}) {
 	margin-right: 0;
+}
+.sensorReading:nth-child(@{sensor-reading-second-row}n+@{sensor-reading-second-row}) {
+	margin-left: 0;
 }

@@ -21,16 +21,18 @@ class SensorToJsonHelper extends AbstractHelper
 			if ($sensorValue instanceof SensorValue) {
 				if (!isset($data[$sensorValue->getSensor()->getId()])) {
 					$data[$sensorValue->getSensor()->getId()] = array(
-						'name' => $sensorValue->getSensor()->getDescription(),
-						'data' => array(),
+						'name'			=> $sensorValue->getSensor()->getDescription(),
+						'data'			=> array(),
+						'scalingFactor'	=> $sensorValue->getSensor()->getScalingFactor(),
+						'valueType'		=> $sensorValue->getSensor()->getValueType(),
+						'units'			=> $sensorValue->getSensor()->getUnits(),
 					);
 				}
 				
 				$value = ($useScaledValues) ? $sensorValue->getScaledValue() : $sensorValue->getCalibratedValue();
 				$data[$sensorValue->getSensor()->getId()]['data'][] = array(
-					'x_date' => $sensorValue->getDate()->format('Y-m-d H:i:s'),
 					'x' => $sensorValue->getDate()->getTimestamp(),
-					'y' => (int) $value,
+					'y' => $value,
 				);
 			}
 		}

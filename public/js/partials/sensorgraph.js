@@ -4,6 +4,14 @@ $('document').ready(function() {
 	//add color to each element
 	$.each(SENSOR_VALUES, function(index, value){
 		value.color = palette.color();
+		value.yFormatter = function(y){
+			var scaled =  y / value.scalingFactor;
+			if (value.valueType == 'float') {
+				return scaled.toFixed(2) + value.units;
+			} else {
+				return parseInt(scaled) + value.units;
+			}
+		};
 	});
 	
 	var graph = new Rickshaw.Graph( {
@@ -16,7 +24,7 @@ $('document').ready(function() {
 	graph.render();
 
 	var hoverDetail = new Rickshaw.Graph.HoverDetail( {
-		graph: graph
+		graph: graph,
 	} );
 
 	var legend = new Rickshaw.Graph.Legend( {
@@ -35,10 +43,10 @@ $('document').ready(function() {
 		element: $('#sensorGraph .slider')[0]
 	} );
 
-	var axis = new Rickshaw.Graph.Axis.Time( {
+	var x_axis = new Rickshaw.Graph.Axis.Time( {
 		graph: graph
 	} );
-	axis.render();
+	x_axis.render();
 	
 	//fetch more results on click
 	$('#sensorGraph .fetchResults').click(function(){

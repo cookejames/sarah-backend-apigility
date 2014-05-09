@@ -15,6 +15,7 @@ class WeatherModel extends WateringSystemModelAbstract
 	protected $url;
 	protected $path;
 	protected $default_location;
+	protected $apiId;
 	
 	public function __construct(array $config)
 	{
@@ -25,6 +26,7 @@ class WeatherModel extends WateringSystemModelAbstract
 		$this->url				= $config['url'];
 		$this->path				= $config['path'];
 		$this->default_location	= $config['default_location'];
+		$this->apiId = (empty($config['api_id'])) ? null : $config['api_id']; 
 	}
 	
 	/**
@@ -152,6 +154,7 @@ class WeatherModel extends WateringSystemModelAbstract
 	 */
 	protected function getApiUrl($location)
 	{
-		return $this->url . $this->path . $location;
+		$url = $this->url . $this->path . $location;
+		return (is_null($this->apiId)) ? $url : $url . '&APPID=' . $this->apiId;
 	}
 }

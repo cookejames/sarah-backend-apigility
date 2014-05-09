@@ -29,6 +29,7 @@ return array(
 		'url' => 'http://api.openweathermap.org/data/2.5/',
 		'path' => 'weather?q=',
 		'default_location' => 'Cambridge,UK',
+		'api_id' => '',
 	),
 	//doctrine config
 	'doctrine' => array(

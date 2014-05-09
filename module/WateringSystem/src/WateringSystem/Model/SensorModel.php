@@ -20,7 +20,7 @@ class SensorModel extends WateringSystemModelAbstract
 	 */
 	public function getSensors()
 	{
-		return $this->getRepository()->findBy(array('isEnabled' => true));
+		return $this->getRepository()->findBy(array('isEnabled' => true), array('description' => 'asc'));
 	}
 	
 	/**

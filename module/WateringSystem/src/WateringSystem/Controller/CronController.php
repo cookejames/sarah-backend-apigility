@@ -49,8 +49,8 @@ class CronController extends WateringSystemControllerAbstract
     	$weather = $this->getWeatherModel()->getWeather();
     	foreach ($weather as $value) {
     		$this->saveEntity($value);
-    		$this->log('Read weather value: '. json_encode($value));
     	}
+    	$this->log('Read ' . count($weather) . ' weather records');
     	return new JsonModel(array('result' => true));
     }
 }

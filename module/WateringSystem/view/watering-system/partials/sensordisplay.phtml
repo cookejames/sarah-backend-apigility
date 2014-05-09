@@ -31,11 +31,10 @@ if ($sensor instanceof Sensor == false) return;
 	</div>
 	<?php if ($sensor->getIsRanged()) : ?>
 	<div class="progress progress-striped">
-		<?php 
-		$r = $sensor->getRange();
-			$percent = (int) ($sensorValue->getCalibratedValue() / $sensor->getRange() * 100);
-		?>
+		<?php if ($sensorValue instanceof SensorValue) : ?>
+			<?php $percent = (int) ($sensorValue->getCalibratedValue() / $sensor->getRange() * 100); ?>
 		<div class="progress-bar progress-bar-info" style="width: <?php echo $percent?>%"></div>
+		<?php endif; ?>
 	</div>
 	<?php endif; ?>
 </div>

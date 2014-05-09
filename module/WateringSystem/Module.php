@@ -15,6 +15,7 @@ use WateringSystem\View\Helper\SensorValueHelper;
 use WateringSystem\View\Helper\SensorToJsonHelper;
 use WateringSystem\View\Helper\FuzzyDateHelper;
 use WateringSystem\Model\PumpModel;
+use WateringSystem\Model\WeatherModel;
 
 class Module
 {
@@ -61,6 +62,15 @@ class Module
     protected function setFactories(ServiceLocatorInterface $serviceLocator)
     {
     	$serviceLocator
+	    	->setFactory('WeatherModel', function($serviceLocator){
+	    		$config = $serviceLocator->get('Config');
+	    		$weatherModel;
+	    		if (isset($config['weather'])) {
+	    			return new WeatherModel($config['weather']);
+	    		} else {
+	    			throw new \Exception('Could not find config item weather');
+	    		}
+	    	})
     		->setFactory('SensorReadingModel', function($serviceLocator){
     			$config = $serviceLocator->get('Config');
     			$sensor;

@@ -17,6 +17,10 @@ class CronController extends WateringSystemControllerAbstract
 		return parent::onDispatch($e);
 	}
 	
+	/**
+	 * Save the 
+	 * @return \Zend\View\Model\JsonModel
+	 */
     public function readSensorsAction()
     {
     	try {
@@ -33,6 +37,19 @@ class CronController extends WateringSystemControllerAbstract
     	} catch (\Exception $e) {
     		$this->log('Reading sensors failed: ' . $e->getMessage());
     		return new JsonModel(array('result' => false, 'message' => $e->getMessage()));
+    	}
+    	return new JsonModel(array('result' => true));
+    }
+    
+    /**
+     * Save the api weather results
+     */
+    public function readWeatherAction()
+    {
+    	$weather = $this->getWeatherModel()->getWeather();
+    	foreach ($weather as $value) {
+    		$this->saveEntity($value);
+    		$this->log('Read weather value: '. json_encode($value));
     	}
     	return new JsonModel(array('result' => true));
     }

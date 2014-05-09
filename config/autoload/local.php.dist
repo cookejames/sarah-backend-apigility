@@ -14,7 +14,7 @@
 return array(
 	//sensor configuration
 	'sensor' => array(
-		'class' => '\WateringSystem\Model\Sensors\Python', //A \WateringSystem\Model\Sensors class name
+		'class' => '\WateringSystem\Model\Sensors\File', //A \WateringSystem\Model\Sensors class name
 		'port'	=> '/dev/ttyACM0', //set the com port eg /dev/ttyACM0
 		'timeout' => 3,
 		'Python' => array(
@@ -23,6 +23,12 @@ return array(
 		'File' => array(
 			'bytesToRead' => '128', //number of bytes to read at a time
 		),
+	),
+	//weather details
+	'weather' => array(
+		'url' => 'http://api.openweathermap.org/data/2.5/',
+		'path' => 'weather?q=',
+		'default_location' => 'Cambridge,UK',
 	),
 	//doctrine config
 	'doctrine' => array(

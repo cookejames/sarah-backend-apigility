@@ -93,6 +93,11 @@ $('document').ready(function() {
 		resizeGraph();
 	});
 	
-	//resize on startup
-	resizeGraph();
+	//resize on opening the tab - should refactor so independant of the tabs
+	$('.heading a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+		var href = $(e.target).attr('href');
+		if (href == '#sensorGraphTab') {
+			resizeGraph();
+		}
+	});
 });

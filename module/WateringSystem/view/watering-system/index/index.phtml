@@ -1,12 +1,11 @@
 <?php 	$this->headscript()->appendFile($this->basePath() . '/js/index/index.js');?>
 <div class="heading">
-	<div class="text">
+	<div class="menu">
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#sensorReadingsTab" data-toggle="tab">Sensor Readings</a></li>
 			<li><a href="#sensorGraphTab" data-toggle="tab">Sensor Graph</a></li>
 		</ul>
 	</div>
-	<div class="button"><span id="pumpOn" class="btn btn-primary">Turn Pump On</span></div>
 </div>
 
 <div class="tab-content">
@@ -45,3 +44,5 @@
 		<?php endif;?>
 	</div>
 </div>
+
+<div class="text-center"><span id="pumpOn" class="btn btn-primary">Turn Pump On Manually</span></div>

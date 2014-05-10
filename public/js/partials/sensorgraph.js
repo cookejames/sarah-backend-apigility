@@ -79,13 +79,20 @@ $('document').ready(function() {
 		);
 	});
 	
-	//make graph width responsive
-	$(window).on('resize', function(){
+	var resizeGraph = function(){
 		var width = $('#sensorGraph').parent().width();
 		$('#sensorGraph .slider').width(width);
 		graph.configure({
 			width: width,
 		});
 		graph.render();
+	};
+	
+	//make graph width responsive
+	$(window).on('resize', function(){
+		resizeGraph();
 	});
+	
+	//resize on startup
+	resizeGraph();
 });

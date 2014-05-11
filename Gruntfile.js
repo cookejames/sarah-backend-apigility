@@ -38,7 +38,6 @@ module.exports = function(grunt) {
 				    'bower_components/rickshaw/vendor/d3.min.js',
 				    'bower_components/rickshaw/vendor/d3.layout.min.js',
 				    'bower_components/rickshaw/rickshaw.js',
-				    'assets/js/**/*.js'
 	          ],
 	          dest: 'public/js/site.js',
 	        },

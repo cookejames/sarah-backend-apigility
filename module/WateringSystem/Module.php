@@ -16,6 +16,7 @@ use WateringSystem\View\Helper\SensorToJsonHelper;
 use WateringSystem\View\Helper\FuzzyDateHelper;
 use WateringSystem\Model\PumpModel;
 use WateringSystem\Model\WeatherModel;
+use Zend\ServiceManager\ServiceManager;
 
 class Module
 {
@@ -142,5 +143,14 @@ class Module
                 ),
             ),
         );
+    }
+    
+    /**
+     * @param ServiceManager $serviceManager
+     */
+    public function setupServiceManager(ServiceManager $serviceManager)
+    {
+    	$this->setFactories($serviceManager)
+		     ->setInvokables($serviceManager);
     }
 }

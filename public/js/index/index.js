@@ -1,18 +1,1 @@
-$('document').ready(function(){
-	$('#pumpOn').click(function(){
-		$.post(
-			'/api/turn-pump-on',
-			{
-				pumpon: true
-			},
-			function(data, textStatus, jqXHR){
-				if (data.result) {
-					$('<div>Pump turning on</div>').dialog();
-				} else {
-					$('<div>Could not turn pump on</div>').dialog();
-				}
-			},
-			'json'
-		);
-	});
-});
+$("document").ready(function(){$("#pumpOn").click(function(){$.post("/api/turn-pump-on",{pumpon:!0},function(data){data.result?$("<div>Pump turning on</div>").dialog():$("<div>Could not turn pump on</div>").dialog()},"json")})});

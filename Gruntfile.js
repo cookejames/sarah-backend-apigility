@@ -48,9 +48,17 @@ module.exports = function(grunt) {
 				mangle: false  // Use if you want the names of your functions and variables unchanged
 			},
 			development: {
-				files: {
-					'public/js/site.js': 'public/js/site.js',
-				}
+				files: [
+			        {
+						'public/js/site.js': 'public/js/site.js',
+					},
+			        {
+			        	expand: true,
+			        	cwd: 'assets/js/',
+			        	src: '**/*.js',
+			        	dest: 'public/js/'
+		    		}
+				]
 			},
 		},
 		phpunit: {

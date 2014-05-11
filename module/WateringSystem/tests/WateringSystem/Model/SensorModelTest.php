@@ -1,17 +1,16 @@
 <?php
-use \PHPUnit_Framework_TestCase;
-use WateringSystem\Model\SensorModel;
-
 /**
  * SensorModel test case.
  */
 class SensorModelTest extends \PHPUnit_Framework_TestCase {
 	
 	/**
-	 *
 	 * @var SensorModel
 	 */
 	private $sensorModel;
+	
+	private $validSensorId = 1;
+	private $validSensorName = 'h1';
 	
 	/**
 	 * Prepares the environment before running a test.
@@ -27,7 +26,6 @@ class SensorModelTest extends \PHPUnit_Framework_TestCase {
 	 * Cleans up the environment after running a test.
 	 */
 	protected function tearDown() {
-		// TODO Auto-generated SensorModelTest::tearDown()
 		$this->sensorModel = null;
 		
 		parent::tearDown ();
@@ -37,37 +35,49 @@ class SensorModelTest extends \PHPUnit_Framework_TestCase {
 	 * Constructs the test case.
 	 */
 	public function __construct() {
-		// TODO Auto-generated constructor
 	}
 	
 	/**
 	 * Tests SensorModel->getSensors()
 	 */
-	public function testGetSensors() {
-		// TODO Auto-generated SensorModelTest->testGetSensors()
-		$this->markTestIncomplete ( "getSensors test not implemented" );
+	public function testGetSensors() 
+	{
+		$sensors = $this->sensorModel->getSensors();
+		//check we are getting an array with more than 1 element
+		$this->assertTrue(is_array($sensors));
+		$this->assertGreaterThan(0, count($sensors));
 		
-		$this->sensorModel->getSensors(/* parameters */);
+		foreach ($sensors as $sensor) {
+			$this->assertInstanceOf('WateringSystem\Entity\Sensor', $sensor);
+		}
 	}
 	
 	/**
 	 * Tests SensorModel->getSensorById()
 	 */
-	public function testGetSensorById() {
-		// TODO Auto-generated SensorModelTest->testGetSensorById()
-		$this->markTestIncomplete ( "getSensorById test not implemented" );
+	public function testGetSensorById() 
+	{
+		//get valid sensor
+		$sensor = $this->sensorModel->getSensorById($this->validSensorId);
+		$this->assertInstanceOf('WateringSystem\Entity\Sensor', $sensor);
 		
-		$this->sensorModel->getSensorById(/* parameters */);
+		//get invalid sensor
+		$sensor = $this->sensorModel->getSensorById(-1);
+		$this->assertNull($sensor);
 	}
 	
 	/**
 	 * Tests SensorModel->getSensorByName()
 	 */
-	public function testGetSensorByName() {
-		// TODO Auto-generated SensorModelTest->testGetSensorByName()
-		$this->markTestIncomplete ( "getSensorByName test not implemented" );
+	public function testGetSensorByName() 
+	{
+		//get valid sensor
+		$sensor = $this->sensorModel->getSensorByName($this->validSensorName);
+		$this->assertInstanceOf('WateringSystem\Entity\Sensor', $sensor);
 		
-		$this->sensorModel->getSensorByName(/* parameters */);
+		//get invalid sensor
+		$sensor = $this->sensorModel->getSensorByName('foo');
+		$this->assertNull($sensor);
 	}
 }
 

@@ -36,6 +36,13 @@ class Sensor implements WateringSystemEntityInterface
 	private $calibration;
 	/** @ORM\Column(type="boolean") */
 	private $isEnabled;
+	/** is this sensor used to determine if we will trigger the watering 
+	 * @ORM\Column(type="boolean") */
+	private $isWateringSensor;
+	/** @ORM\Column(type="float") */
+	private $wateringThresholdLower;
+	/** @ORM\Column(type="float") */
+	private $wateringThresholdUpper;
 	
 	/** Valid value types */
 	const TYPE_BOOLEAN	= 'boolean';
@@ -232,6 +239,51 @@ class Sensor implements WateringSystemEntityInterface
 		$this->calibration = $calibration;
 		return $this;
 	}
+	/**
+	 * @return the $isWateringSensor
+	 */
+	public function getIsWateringSensor() {
+		return $this->isWateringSensor;
+	}
+
+	/**
+	 * @param field_type $isWateringSensor
+	 */
+	public function setIsWateringSensor($isWateringSensor) {
+		$this->isWateringSensor = $isWateringSensor;
+		return $this;
+	}
+
+	/**
+	 * @return the $wateringThresholdLower
+	 */
+	public function getWateringThresholdLower() {
+		return $this->wateringThresholdLower;
+	}
+
+	/**
+	 * @param field_type $wateringThresholdLower
+	 */
+	public function setWateringThresholdLower($wateringThresholdLower) {
+		$this->wateringThresholdLower = $wateringThresholdLower;
+		return $this;
+	}
+
+	/**
+	 * @return the $wateringThresholdUpper
+	 */
+	public function getWateringThresholdUpper() {
+		return $this->wateringThresholdUpper;
+	}
+
+	/**
+	 * @param field_type $wateringThresholdUpper
+	 */
+	public function setWateringThresholdUpper($wateringThresholdUpper) {
+		$this->wateringThresholdUpper = $wateringThresholdUpper;
+		return $this;
+	}
+
 
 
 

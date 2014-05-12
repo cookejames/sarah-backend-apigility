@@ -3,6 +3,7 @@
 namespace WateringSystem\Model;
 
 use WateringSystem\Model\Sensors\SensorAbstract;
+use WateringSystem\Entity\Sensor;
 /**
  * Retrieve sensor readings
  * @author James Cooke

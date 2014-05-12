@@ -39,6 +39,8 @@ class CronController extends WateringSystemControllerAbstract
 				if ($this->getWateringModel()->shouldPumpActivate($pump, $sensorValues)) {
 					$this->log($pump->getDescription() . ' should activate!');
 					$this->getPumpModel()->turnPumpOn();
+				} else {
+					$this->log($pump->getDescription() . ' should not activate');
 				}
 			}
 

@@ -27,6 +27,26 @@ class PumpModel extends WateringSystemModelAbstract
 		//send the status message
 		$this->sensor->sendMessage('pumpon');
 		$this->log('Turning pump on');
+		return true;
+	}
+	
+	/**
+	 * Get the pump as specified in the config file
+	 * @return Ambigous <NULL, \WateringSystem\Entity\Sensor, object>
+	 */
+	public function getPumpFromConfig()
+	{
+		$config = $this->getServiceLocator()->get('config');
+		 
+		$pump = null;
+		 
+		if (isset($config['watering']) && isset($config['watering']['pumpName'])) {
+			$pumpName = $config['watering']['pumpName'];
+			$sensorModel = $this->getServiceLocator()->get('SensorModel');
+			$pump = $sensorModel->getSensorByName($pumpName);
+		}
+		 
+		return $pump;
 	}
 
 }

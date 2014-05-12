@@ -13,4 +13,8 @@
 
 return array(
 	'logPath' => 'logs/log',
+	'watering' => array(
+		'hysterisis' => 3600, //number of seconds before pump will run since last run
+		'pumpName'	=> 'p1', //the sensor name of our pump
+	),
 );

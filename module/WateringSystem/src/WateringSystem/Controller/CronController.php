@@ -25,14 +25,23 @@ class CronController extends WateringSystemControllerAbstract
     {
     	try {
     		$readings = $this->getSensorReadingModel()->getSensorReadings();
-    		foreach ($readings as $name => $value) {
-    			$sensor = $this->getSensorModel()->getSensorByName($name);
-    			if ($sensor instanceof Sensor) {
-    				$sensorValue = $sensor->getNewSensorValue();
-    				$sensorValue->setValue($value);
-    				$this->saveEntity($sensorValue);
-    			}
-    		}
+    		//convert the readings to sensor values
+			$sensorValues = $this->getSensorReadingModel()->sensorReadingsToSensorValues($readings);
+			
+			//save all the sensor values
+			foreach ($sensorValues as $value) {
+				$this->saveEntity($value);
+			}
+			
+			//get the pump and check if it should activate
+			$pump = $this->getPumpModel()->getPumpFromConfig();
+			if ($pump instanceof Sensor) {
+				if ($this->getWateringModel()->shouldPumpActivate($pump, $sensorValues)) {
+					$this->log($pump->getDescription() . ' should activate!');
+					$this->getPumpModel()->turnPumpOn();
+				}
+			}
+
     		$this->log('Read sensors: ' . json_encode($readings));
     	} catch (\Exception $e) {
     		$this->log('Reading sensors failed: ' . $e->getMessage());

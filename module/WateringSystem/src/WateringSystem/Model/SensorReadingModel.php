@@ -43,4 +43,24 @@ class SensorReadingModel extends WateringSystemModelAbstract
 		}
 	}
 
+	/**
+	 * Convert readings into an array of sensor values
+	 * @param unknown $readings
+	 * @return multitype:unknown
+	 */
+	public function sensorReadingsToSensorValues($readings)
+	{
+		$sensorValues = array();	
+		foreach ($readings as $name => $value) {
+			$sensorModel = $this->getServiceLocator()->get('SensorModel');
+			$sensor = $sensorModel->getSensorByName($name);
+			if ($sensor instanceof Sensor) {
+				$sensorValue = $sensor->getNewSensorValue();
+				$sensorValue->setValue($value);
+				$sensorValues[] = $sensorValue;
+			}
+		}
+		
+		return $sensorValues;
+	}
 }

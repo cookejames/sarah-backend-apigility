@@ -12,6 +12,7 @@ use WateringSystem;
 use WateringSystem\Entity\WateringSystemEntityInterface;
 use WateringSystem\Model\PumpModel;
 use WateringSystem\Model\WeatherModel;
+use WateringSystem\Model\WateringModel;
 
 abstract class WateringSystemControllerAbstract extends AbstractActionController
 {
@@ -97,5 +98,13 @@ abstract class WateringSystemControllerAbstract extends AbstractActionController
 	protected function getWeatherModel()
 	{
 		return $this->getServiceLocator()->get('WeatherModel');
+	}
+	
+	/**
+	 * @return WateringModel
+	 */
+	protected function getWateringModel()
+	{
+		return $this->getServiceLocator()->get('WateringModel');
 	}
 }

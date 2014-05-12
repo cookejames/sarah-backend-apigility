@@ -17,6 +17,7 @@ use WateringSystem\View\Helper\FuzzyDateHelper;
 use WateringSystem\Model\PumpModel;
 use WateringSystem\Model\WeatherModel;
 use Zend\ServiceManager\ServiceManager;
+use WateringSystem\Model\WateringModel;
 
 class Module
 {
@@ -63,9 +64,16 @@ class Module
     protected function setFactories(ServiceLocatorInterface $serviceLocator)
     {
     	$serviceLocator
+	    	->setFactory('WateringModel', function($serviceLocator){
+	    		$config = $serviceLocator->get('Config');
+	    		if (isset($config['watering']) && isset($config['watering']['hysterisis'])) {
+	    			return new WateringModel($config['watering']['hysterisis']);
+	    		} else {
+	    			return new WateringModel();
+	    		}
+	    	})
 	    	->setFactory('WeatherModel', function($serviceLocator){
 	    		$config = $serviceLocator->get('Config');
-	    		$weatherModel;
 	    		if (isset($config['weather'])) {
 	    			return new WeatherModel($config['weather']);
 	    		} else {

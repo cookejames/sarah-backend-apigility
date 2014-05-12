@@ -27,10 +27,17 @@ class SensorValueModel extends WateringSystemModelAbstract
 	/**
 	 * Get the last value for a sensor
 	 * @param int $sensorId
+	 * @param mixed the last value must equals this
 	 */
-	public function getLastValue($sensorId)
+	public function getLastValue($sensorId, $whereValueEquals = null)
 	{
-		return $this->getRepository()->findOneBy(array('sensor' => $sensorId), array('date' => 'DESC'));
+		$parameters = array('sensor' => $sensorId);
+		
+		if (!is_null($whereValueEquals)) {
+			$parameters['value'] = $whereValueEquals;
+		}
+		
+		return $this->getRepository()->findOneBy($parameters, array('date' => 'DESC'));
 		
 	}
 	
@@ -54,5 +61,5 @@ class SensorValueModel extends WateringSystemModelAbstract
 
 		$query = $queryBuilder->getQuery();
 		return $query->getResult();
-	} 
+	}
 }

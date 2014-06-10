@@ -64,4 +64,11 @@ class CronController extends WateringSystemControllerAbstract
     	$this->log('Read ' . count($weather) . ' weather records');
     	return new JsonModel(array('result' => true));
     }
+    
+    public function registerSensorValuesAction()
+    {
+    	$values = $this->getRequest()->getPost('values', false);
+    	$this->log('Received sensor values: ' . $values);
+    	return new JsonModel(array('result' => $values));
+    }
 }

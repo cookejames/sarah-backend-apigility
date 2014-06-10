@@ -49,7 +49,7 @@ class SensorReadingModel extends WateringSystemModelAbstract
 	 * @param unknown $readings
 	 * @return multitype:unknown
 	 */
-	public function sensorReadingsToSensorValues($readings)
+	public function sensorReadingsToSensorValues($readings, $requiresConversion = false)
 	{
 		$sensorValues = array();	
 		foreach ($readings as $name => $value) {
@@ -57,6 +57,10 @@ class SensorReadingModel extends WateringSystemModelAbstract
 			$sensor = $sensorModel->getSensorByName($name);
 			if ($sensor instanceof Sensor) {
 				$sensorValue = $sensor->getNewSensorValue();
+				//some values may be passed as ints and require converting to floats
+				if ($requiresConversion) {
+					$value *= $sensor->getConversionFactor();
+				}
 				$sensorValue->setValue($value);
 				$sensorValues[] = $sensorValue;
 			}

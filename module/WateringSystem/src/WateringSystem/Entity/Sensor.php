@@ -24,6 +24,10 @@ class Sensor implements WateringSystemEntityInterface
 	private $valueType;
 	/** @ORM\Column(length=255, nullable=true) */
 	private $units;
+	/** this will be the multiple to convert an int to a float
+	 *  eg 0.01 to convert a sensor reading from 10000 to 100.00 
+	 * @ORM\Column(type="float") */
+	private $conversionFactor;
 	/** @ORM\Column(type="boolean") */
 	private $isRanged;
 	/** @ORM\Column(type="float") */
@@ -283,6 +287,21 @@ class Sensor implements WateringSystemEntityInterface
 		$this->wateringThresholdUpper = $wateringThresholdUpper;
 		return $this;
 	}
+	/**
+	 * @return the $conversionFactor
+	 */
+	public function getConversionFactor() {
+		return $this->conversionFactor;
+	}
+
+	/**
+	 * @param field_type $conversionFactor
+	 */
+	public function setConversionFactor($conversionFactor) {
+		$this->conversionFactor = $conversionFactor;
+		return $this;
+	}
+
 
 
 

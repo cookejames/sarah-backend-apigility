@@ -65,10 +65,26 @@ class CronController extends WateringSystemControllerAbstract
     	return new JsonModel(array('result' => true));
     }
     
+    /**
+     * Used to register sensor readings posted as json
+     * @return \Zend\View\Model\JsonModel
+     */
     public function registerSensorValuesAction()
     {
-    	$values = $this->getRequest()->getPost('values', false);
-    	$this->log('Received sensor values: ' . $values);
-    	return new JsonModel(array('result' => $values));
+    	$json = $this->getRequest()->getPost('values', false);
+       	$readings = json_decode($json);
+    	
+       	if ($readings) {
+	       	//convert the readings to sensor values
+			$sensorValues = $this->getSensorReadingModel()->sensorReadingsToSensorValues($readings, true);
+			$this->log('reading: ' . print_r($sensorValues, true));
+			//save all the sensor values
+			foreach ($sensorValues as $value) {
+				$this->saveEntity($value);
+			}
+	    	return new JsonModel(array('result' => true));
+       	} else {
+       		return new JsonModel(array('result' => false));
+       	}
     }
 }

@@ -33,22 +33,6 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-		concat: {
-			options: {
-				separator: ';',
-			},
-			development: {
-				src: [
-				    'bower_components/jquery/dist/jquery.js',
-				    'bower_components/jquery-ui/ui/jquery-ui.js',
-				    'bower_components/bootstrap/dist/js/bootstrap.js',
-				    'bower_components/rickshaw/vendor/d3.min.js',
-				    'bower_components/rickshaw/vendor/d3.layout.min.js',
-				    'bower_components/rickshaw/rickshaw.js',
-	          ],
-	          dest: 'public/js/site.js',
-	        },
-		},
 		uglify: {
 			options: {
 				mangle: (global.isDev) ? false : true,
@@ -59,7 +43,14 @@ module.exports = function(grunt) {
 			development: {
 				files: [
 			        {
-						'public/js/site.js': 'public/js/site.js',
+						'public/js/site.js': [
+		  				    'bower_components/jquery/dist/jquery.js',
+						    'bower_components/jquery-ui/ui/jquery-ui.js',
+						    'bower_components/bootstrap/dist/js/bootstrap.js',
+						    'bower_components/rickshaw/vendor/d3.min.js',
+						    'bower_components/rickshaw/vendor/d3.layout.min.js',
+						    'bower_components/rickshaw/rickshaw.js',
+				          ],
 					},
 			        {
 			        	expand: true,
@@ -97,7 +88,7 @@ module.exports = function(grunt) {
 				files: [
 				        'assets/js/**/*.js'
 		        ],   
-		        tasks: ['newer:concat','newer:uglify'], //tasks to run
+		        tasks: ['newer:uglify'], //tasks to run
 			},
 	        less: {
 	        	files: [
@@ -123,7 +114,6 @@ module.exports = function(grunt) {
 	});
 
 	// Plugin loading
-	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-less');
@@ -132,5 +122,5 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	// Task definition
-	grunt.registerTask('default', ['concat', 'less', 'cssmin', 'uglify', 'copy']);
+	grunt.registerTask('default', ['less', 'cssmin', 'uglify', 'copy']);
 };

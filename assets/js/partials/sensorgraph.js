@@ -25,6 +25,9 @@ $('document').ready(function() {
 
 	var hoverDetail = new Rickshaw.Graph.HoverDetail( {
 		graph: graph,
+        xFormatter: function(x) {
+            return new Date(x * 1000).toString(); 
+        },
 	} );
 
 	var legend = new Rickshaw.Graph.Legend( {

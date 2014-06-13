@@ -14,23 +14,23 @@ class FuzzyDateHelper extends AbstractHelper
 	public function __invoke(\DateTime $date)
 	{
 		$now = new \DateTime();
-		$diff = $now->diff($date);
+		//get difference in seconds
+		$seconds = $now->getTimestamp() - $date->getTimestamp();
+		$minutes = (int) ($seconds / 60);
+		$hours = (int) ($minutes / 60);
 		
-		$minutes = $diff->h * 60 + $diff->i;
-		$hours = $diff->h;
-		
-		if ($minutes == 0) {
+		if ($seconds < 60) {
 			return 'less than a minute';
-		} elseif ($minutes == 1) {
+		} elseif ($seconds == 60) {
 			return 'a minute ago';
-		} elseif ($minutes < 60) {
+		} elseif ($seconds < 60 * 60) {
 			return $minutes . ' minutes ago';
-		} elseif ($hours == 1) {
+		} elseif ($seconds == 60 * 60) {
 			return 'an hour ago';
-		} elseif ($hours < 24) {
+		} elseif ($seconds < 60 * 60 * 24) {
 			return $hours . ' hours ago';
 		} else {
-			return 'over a day';
+			return 'over a day ago';
 		}
 	}
 }

@@ -77,7 +77,7 @@ class CronController extends WateringSystemControllerAbstract
        	if ($readings) {
 	       	//convert the readings to sensor values
 			$sensorValues = $this->getSensorReadingModel()->sensorReadingsToSensorValues($readings, true);
-			$this->log('reading: ' . print_r($sensorValues, true));
+
 			//save all the sensor values
 			foreach ($sensorValues as $value) {
 				$this->saveEntity($value);

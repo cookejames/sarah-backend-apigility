@@ -1,14 +1,21 @@
 //Gruntfile
 module.exports = function(grunt) {
 	var jqueryUiTheme = 'cupertino';
+	//set the global option isDev if given the --dev commandline parameter
+	global.isDev = false;
+	if (grunt.option('dev')) {
+		global.isDev = true;
+	}
 	// Initializing the configuration object
 	grunt.initConfig({
 		// Task configuration
 		less: {
+			options: {
+				compress: true,  //minifying the result
+				sourceMap: (global.isDev) ? true : false,
+				outputSourceFiles: true,
+			},
 			development: {
-				options: {
-					compress: true,  //minifying the result
-				},
 				files: {
 					"public/css/site.css":"assets/less/site.less",
 				}
@@ -44,7 +51,10 @@ module.exports = function(grunt) {
 		},
 		uglify: {
 			options: {
-				mangle: false  // Use if you want the names of your functions and variables unchanged
+				mangle: (global.isDev) ? false : true,
+				beautify: false,
+				sourceMap: (global.isDev) ? true : false,
+				sourceMapIncludeSources: true
 			},
 			development: {
 				files: [
@@ -59,9 +69,6 @@ module.exports = function(grunt) {
 		    		}
 				]
 			},
-		},
-		phpunit: {
-			//not using this yet
 		},
 		copy: {
 			development: {
@@ -90,29 +97,28 @@ module.exports = function(grunt) {
 				files: [
 				        'assets/js/**/*.js'
 		        ],   
-		        tasks: ['concat','uglify'], //tasks to run
-		        options: {
-		        	livereload: false //reloads the browser
-	            }
+		        tasks: ['newer:concat','newer:uglify'], //tasks to run
 			},
 	        less: {
 	        	files: [
 	        	        'assets/less/**/*.less'
     	        ], //watched files
-	        	tasks: ['less', 'cssmin'], //tasks to run
-	        	options: {
-	        		livereload: false //reloads the browser
-	            }
+	        	tasks: ['newer:less', 'newer:cssmin'], //tasks to run
 	        },
 	        css: {
 	        	files: [
 	        	        'assets/css/**/*.css'
     	        ], //watched files
-	        	tasks: ['less', 'cssmin'], //tasks to run
-	        	options: {
-	        		livereload: false //reloads the browser
-	            }
+	        	tasks: ['newer:less', 'newer:cssmin'], //tasks to run
 	        },
+	        public_html: {
+	        	files: [
+	        	        'public_html/**/*.{css,js}'
+    	        ],
+    	        options: {
+    	        	livereload: true
+    	        }
+	        }
 		}
 	});
 

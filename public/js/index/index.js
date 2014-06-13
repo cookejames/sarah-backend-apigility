@@ -1,1 +1,0 @@
-$("document").ready(function(){$("#pumpOn").click(function(){$.post("/api/turn-pump-on",{pumpon:!0},function(data){data.result?$("<div>Pump turning on</div>").dialog():$("<div>Could not turn pump on</div>").dialog()},"json")})});

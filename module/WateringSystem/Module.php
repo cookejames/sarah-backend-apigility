@@ -52,7 +52,8 @@ class Module
     {
     	$serviceLocator
     		->setInvokableClass('SensorValueModel', 'WateringSystem\Model\SensorValueModel')
-    		->setInvokableClass('SensorModel', 'WateringSystem\Model\SensorModel');
+    		->setInvokableClass('SensorModel', 'WateringSystem\Model\SensorModel')
+    		->setInvokableClass('NodeModel', 'WateringSystem\Model\NodeModel');
     	return $this;
     }
 

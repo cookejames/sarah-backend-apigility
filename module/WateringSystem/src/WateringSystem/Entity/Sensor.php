@@ -18,6 +18,11 @@ class Sensor implements WateringSystemEntityInterface
 	private $id;
 	/** @ORM\Column(length=255) */
 	private $name;
+	/**
+	 * @ORM\ManyToOne(targetEntity="Node", inversedBy="sensors")
+	 * @ORM\JoinColumn(name="node", referencedColumnName="id")
+	 * */
+	private $node;
 	/** @ORM\Column(length=255, unique=true) */
 	private $description;
 	/** @ORM\Column(length=255) */
@@ -301,9 +306,18 @@ class Sensor implements WateringSystemEntityInterface
 		$this->conversionFactor = $conversionFactor;
 		return $this;
 	}
+	/**
+	 * @return Node $node
+	 */
+	public function getNode() {
+		return $this->node;
+	}
 
-
-
-
-
+	/**
+	 * @param field_type $node
+	 */
+	public function setNode(Node $node) {
+		$this->node = $node;
+		return $this;
+	}
 }

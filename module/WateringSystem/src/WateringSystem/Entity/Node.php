@@ -47,7 +47,7 @@ class Node implements WateringSystemEntityInterface
 	 * @return string
 	 */
 	public function getName() {
-		return $this->value;
+		return $this->name;
 	}
 
 	/**
@@ -73,7 +73,7 @@ class Node implements WateringSystemEntityInterface
 	}
 	
 	/**
-	 * @return Array $sensors
+	 * @return ArrayCollection $sensors
 	 */
 	public function getSensors() {
 		return $this->sensors;

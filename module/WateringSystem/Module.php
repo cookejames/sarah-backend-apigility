@@ -18,6 +18,7 @@ use WateringSystem\Model\PumpModel;
 use WateringSystem\Model\WeatherModel;
 use Zend\ServiceManager\ServiceManager;
 use WateringSystem\Model\WateringModel;
+use WateringSystem\View\Helper\CounterHelper;
 
 class Module
 {
@@ -138,6 +139,9 @@ class Module
 				},
 				'FuzzyDate' => function ($sm) {
 					return new FuzzyDateHelper($sm);
+				},
+				'Counter' => function ($sm) {
+					return new CounterHelper($sm);
 				},
 			)
     	);

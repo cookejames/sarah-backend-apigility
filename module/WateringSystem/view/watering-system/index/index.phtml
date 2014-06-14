@@ -2,39 +2,25 @@
 <div class="heading">
 	<div class="menu">
 		<ul class="nav nav-tabs">
-			<li class="active"><a href="#sensorReadingsTab" data-toggle="tab">Sensor Readings</a></li>
-			<li><a href="#sensorGraphTab" data-toggle="tab">Sensor Graph</a></li>
+			<?php foreach ($this->nodes as $node) : ?>
+				<li <?php if ($this->counter()->isFirst('tab')) echo 'class="active"'; ?>><a href="#node<?php echo $node->getId()?>" data-toggle="tab"><?php echo $this->escapehtml($node->getName())?></a></li>
+			<?php endforeach; ?>
 		</ul>
 	</div>
 </div>
-
 <div class="tab-content">
-	<!-- Sensor readings tab -->
-	<div id="sensorReadingsTab" class="tab-pane active">
-		<?php if ($this->sensors) : ?>
-			<div class="sensorReadings">
-			<?php
-				//output the latest sensor values
-				$i = 0;
-				foreach ($this->sensors as $sensor) {
-					//open the row for every 4th element
-					if ($i % 4 == 0) echo '<div>';
-					//output the sensor details
-					echo $this->partial('watering-system/partials/sensordisplay.phtml', array('sensor' => $sensor));
-					//close the row for every 4th element
-					if ($i % 4 == 3) echo '</div>';
-					//we need this to clear the divs on small displays otherwise we can get misaligned rows
-					if ($i % 4 == 1) echo '<div class="clearfix visible-xs"></div>';
-					$i++;
-				}
-				//we need this line to close the last row if it wasn't 4 elements wide
-				if ($i % 4 != 3) echo '</div>';
-			?>
-			</div>
-		<?php else : ?>
-			<p>No sensor readings found</p>
-		<?php endif;?>
-	</div>
+	<?php foreach ($this->nodes as $node) : ?>
+		<div id="node<?php echo $node->getId(); ?>" class="tab-pane<?php if ($this->counter()->isFirst('tabContent')) echo ' active'; ?>">
+			<?php if (($sensors = $node->getSensors()) == true) : ?>
+				<?php echo $this->partial('watering-system/partials/nodetab.phtml', array('node' => $node, 'sensors' => $sensors, 'columns' => 4)); ?>
+			<?php else : ?>
+				<p>No sensors found</p>
+			<?php endif;?>
+		</div>
+	<?php endforeach; ?>
+</div>
+<?php /*
+<div class="tab-content">
 	<!-- Sensor graph tab -->
 	<div id="sensorGraphTab" class="tab-pane">
 		<?php if ($this->sensorValues) : ?>
@@ -44,5 +30,5 @@
 		<?php endif;?>
 	</div>
 </div>
-
-<div class="text-center"><span id="pumpOn" class="btn btn-primary">Turn Pump On Manually</span></div>
+*/ ?>
+<!-- <div class="text-center"><span id="pumpOn" class="btn btn-primary">Turn Pump On Manually</span></div> -->

@@ -5,6 +5,7 @@ namespace WateringSystem\Model;
 use WateringSystem\Model\WateringSystemModelAbstract;
 use WateringSystem\Entity\SensorValue;
 use Doctrine\ORM\Query\Expr;
+use WateringSystem\Entity\Node;
 
 /**
  * Get details about sensor values
@@ -44,9 +45,10 @@ class SensorValueModel extends WateringSystemModelAbstract
 	/**
 	 * Get enabled sensor values since this date
 	 * @param \DateTime $from
+	 * @param Node $node the node to get the values for 
 	 * @return SensorValue[]
 	 */
-	public function getSensorValuesBetween(\DateTime $from, \DateTime $to, $order = 'DESC')
+	public function getSensorValuesBetween(\DateTime $from, \DateTime $to, Node $node, $order = 'DESC')
 	{
 		$queryBuilder = $this->createQueryBuilder();
 		$result = $queryBuilder
@@ -56,7 +58,8 @@ class SensorValueModel extends WateringSystemModelAbstract
 			->andWhere($queryBuilder->expr()->gte('sensorValues.date', ':from'))
 			->andWhere($queryBuilder->expr()->lt('sensorValues.date', ':to'))
 			->andWhere($queryBuilder->expr()->eq('sensors.isEnabled', ':enabled'))
-			->setParameters(array(':enabled' => true, ':from' => $from, ':to' => $to))
+			->andWhere($queryBuilder->expr()->eq('sensors.node', ':node'))
+			->setParameters(array(':enabled' => true, ':from' => $from, ':to' => $to, ':node' => $node->getId()))
 			->orderBy('sensorValues.date', $order);
 
 		$query = $queryBuilder->getQuery();

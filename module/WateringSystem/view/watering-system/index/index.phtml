@@ -12,23 +12,11 @@
 	<?php foreach ($this->nodes as $node) : ?>
 		<div id="node<?php echo $node->getId(); ?>" class="tab-pane<?php if ($this->counter()->isFirst('tabContent')) echo ' active'; ?>">
 			<?php if (($sensors = $node->getSensors()) == true) : ?>
-				<?php echo $this->partial('watering-system/partials/nodetab.phtml', array('node' => $node, 'sensors' => $sensors, 'columns' => 4)); ?>
+				<?php echo $this->partial('watering-system/partials/nodetab.phtml', array('node' => $node, 'sensors' => $sensors, 'columns' => 4, 'container' => '#node' . $node->getId())); ?>
 			<?php else : ?>
 				<p>No sensors found</p>
 			<?php endif;?>
 		</div>
 	<?php endforeach; ?>
 </div>
-<?php /*
-<div class="tab-content">
-	<!-- Sensor graph tab -->
-	<div id="sensorGraphTab" class="tab-pane">
-		<?php if ($this->sensorValues) : ?>
-			<?php echo $this->partial('watering-system/partials/sensorgraph.phtml', array('sensorValues' => $this->sensorValues)); ?>
-		<?php else : ?>
-			<p>No sensor values found</p>
-		<?php endif;?>
-	</div>
-</div>
-*/ ?>
 <!-- <div class="text-center"><span id="pumpOn" class="btn btn-primary">Turn Pump On Manually</span></div> -->

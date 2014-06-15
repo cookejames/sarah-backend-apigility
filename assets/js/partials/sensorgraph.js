@@ -1,106 +1,167 @@
-$('document').ready(function() {
-	var palette = new Rickshaw.Color.Palette();
-	
-	//add color to each element
-	$.each(SENSOR_VALUES, function(index, value){
-		value.color = palette.color();
-		value.yFormatter = function(y){
-			var scaled =  y / value.scalingFactor;
-			if (value.valueType == 'float') {
-				return scaled.toFixed(2) + value.units;
-			} else {
-				return parseInt(scaled) + value.units;
+(function( $ ) {
+	'use strict';
+	$.widget('drhouse.sensorgraph', {
+		options: {
+			palette:		new Rickshaw.Color.Palette(),
+			values:			{},
+			chartElement:	'.chart',
+			legendElement:	'.legend',
+			sliderElement:	'.slider',
+			responsive:		true,
+		},
+		
+		_create: function() {
+			this._addColorToValues(this.options.values, this.options.palette);
+			this.graph = this._createGraph(this.options.values);
+			this.hoverDetail = this._createHoverDetail(this.graph);
+			this.legend = this._createLegend(this.graph);
+			this.slider = this._createSlider(this.graph);
+			this._createAxis(this.graph);
+
+			if (this.options.responsive) {
+				this.makeResponsive();
 			}
-		};
-	});
+		},
+		
+		/**
+		 * Make the graph responsive on window sizing
+		 */
+		makeResponsive: function() {
+			var self = this;
+			//make graph width responsive
+			$(window).on('resize', function(){
+				self.resizeGraph();
+			});
+		},
+		
+		/**
+		 * Add palette colors to each of the sensor values
+		 */
+		_addColorToValues: function(values, palette) {
+			//add color to each element
+			$.each(values, function(index, value){
+				value.color = palette.color();
+				value.yFormatter = function(y){
+					var scaled =  y / value.scalingFactor;
+					if (value.valueType == 'float') {
+						return scaled.toFixed(2) + value.units;
+					} else {
+						return parseInt(scaled) + value.units;
+					}
+				};
+			});
+		},
+		
+		/**
+		 * Create the rickshaw graph
+		 */
+		_createGraph: function(values) {
+			var graph = new Rickshaw.Graph( {
+				element: this.element.find(this.options.chartElement)[0],
+				height: 300,
+				renderer: 'line',
+				series: values
+			} );
+			graph.render();
+			return graph;
+		},
+		
+		/**
+		 * Create the graph hover details with date formatting
+		 */
+		_createHoverDetail: function(graph) {
+			var hoverDetail = new Rickshaw.Graph.HoverDetail({
+				graph: graph,
+		        xFormatter: function(x) {
+		            return new Date(x * 1000).toString(); 
+		        },
+			});
+			
+			return hoverDetail;
+		},
 	
-	var graph = new Rickshaw.Graph( {
-		element: $('#sensorGraph .chart')[0],
-		height: 300,
-		renderer: 'line',
-		series: SENSOR_VALUES
-	} );
-
-	graph.render();
-
-	var hoverDetail = new Rickshaw.Graph.HoverDetail( {
-		graph: graph,
-        xFormatter: function(x) {
-            return new Date(x * 1000).toString(); 
-        },
-	} );
-
-	var legend = new Rickshaw.Graph.Legend( {
-		graph: graph,
-		element: $('#sensorGraph .legend')[0]
-
-	} );
-
-	var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
-		graph: graph,
-		legend: legend
-	} );
-
-	var slider = new Rickshaw.Graph.RangeSlider( {
-		graph: graph,
-		element: $('#sensorGraph .slider')[0]
-	} );
-
-	var x_axis = new Rickshaw.Graph.Axis.Time( {
-		graph: graph
-	} );
-	x_axis.render();
+		/**
+		 * Create the graph legend with series toggle
+		 */
+		_createLegend: function(graph) {
+			var legend = new Rickshaw.Graph.Legend( {
+				graph: graph,
+				element: this.element.find(this.options.legendElement)[0]
+		
+			} );
+			
+			var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
+				graph: graph,
+				legend: legend
+			} );
+			
+			return legend;
+		},
 	
-	//fetch more results on click
-	$('#sensorGraph .fetchResults').click(function(){
-		var self = this;
-		$(self).hide();
-		$.post(
-			'/api/fetch-sensor-values',
-			{
-				before: FIRST_VALUE
-			},
-			function(data, textStatus, jqXHR){
-				if (data.result && data.result.length > 0) {
-					//show the button if we have a valid result
-					$(self).show();
-					//iterate through the result and prepend our graph data
-					$.each(data.result, function(index, sensor){
-						$.each(SENSOR_VALUES, function(index, graphSensor){
-							if (sensor.name == graphSensor.name) {
-								graphSensor.data = sensor.data.concat(graphSensor.data);
-							}
+		/**
+		 * Create graph slider
+		 */
+		_createSlider: function(graph) {
+			var slider = new Rickshaw.Graph.RangeSlider( {
+				graph: graph,
+				element: this.element.find(this.options.sliderElement)[0]
+			} );
+			return slider;
+		},
+		
+		/**
+		 * Create graph axis
+		 */
+		_createAxis: function(graph) {
+			var x_axis = new Rickshaw.Graph.Axis.Time( {
+				graph: graph
+			} );
+			x_axis.render();
+		},
+		
+		/* will re-add functionality later
+		//fetch more results on click
+		$('#sensorGraph .fetchResults').click(function(){
+			var self = this;
+			$(self).hide();
+			$.post(
+				'/api/fetch-sensor-values',
+				{
+					before: FIRST_VALUE
+				},
+				function(data, textStatus, jqXHR){
+					if (data.result && data.result.length > 0) {
+						//show the button if we have a valid result
+						$(self).show();
+						//iterate through the result and prepend our graph data
+						$.each(data.result, function(index, sensor){
+							$.each(SENSOR_VALUES, function(index, graphSensor){
+								if (sensor.name == graphSensor.name) {
+									graphSensor.data = sensor.data.concat(graphSensor.data);
+								}
+							});
 						});
-					});
-					///update the first value we have
-					FIRST_VALUE = data.result[0].data[0].x_date;
-					//update the graph
-					graph.update();
-				}
-			},
-			'json'
-		);
-	});
-	
-	var resizeGraph = function(){
-		var width = $('#sensorGraph').parent().width();
-		$('#sensorGraph .slider').width(width);
-		graph.configure({
-			width: width,
+						///update the first value we have
+						FIRST_VALUE = data.result[0].data[0].x_date;
+						//update the graph
+						graph.update();
+					}
+				},
+				'json'
+			);
 		});
-		graph.render();
-	};
-	
-	//make graph width responsive
-	$(window).on('resize', function(){
-		resizeGraph();
-	});
-	
-	//resize on opening the tab - should refactor so independant of the tabs
-	$('.heading a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-		var href = $(e.target).attr('href');
-		if (href == '#sensorGraphTab') {
-			resizeGraph();
+		*/
+		
+		/**
+		 * Resize the graph to the size of its parent element
+		 */
+		resizeGraph: function() {
+			var width = this.element.parent().width();
+			this.element.find(this.options.sliderElement).width(width);
+			this.graph.configure({
+				width: width,
+			});
+			this.graph.render();
 		}
 	});
-});
+}( jQuery ));

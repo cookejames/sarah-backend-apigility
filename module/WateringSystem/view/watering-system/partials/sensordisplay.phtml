@@ -12,7 +12,7 @@ if ($sensor instanceof Sensor == false) return;
 		</div>
 		<div class="value">
 		<?php 
-			$sensorValue = $this->sensorvalue($sensor);
+			$sensorValue = $this->sensorvalue()->lastValue($sensor);
 			if ($sensorValue instanceof SensorValue) {
 				switch ($sensorValue->getSensor()->getValueType()) {
 					case Sensor::TYPE_BOOLEAN :

@@ -1,17 +1,20 @@
 <?php
 	$sensorValues = $this->sensorValues;
 	if (!is_array($sensorValues) || count($sensorValues) == 0) return;
-	
-	$firstDate = $sensorValues[0]->getDate()->format('Y-m-d H:i:s');
-	//format the sensor values as json for the graph
-	$this->headscript()->appendScript('SENSOR_VALUES = ' . $this->sensorToJson($sensorValues, true) .'; FIRST_VALUE = "' . $firstDate . '";')
-					   ->appendFile($this->basePath() . '/js/partials/sensorgraph.js');
+	$this->headscript()->prependFile($this->basePath() . '/js/partials/sensorgraph.js');
 ?>
-<div id="sensorGraph">
+<?php $this->headScript()->captureStart() ?>
+jQuery(document).ready(function($){
+	$('<?php echo $this->container?>').find('.sensorGraph').sensorgraph({
+		values: <?php echo $this->sensorToJson($sensorValues, true); ?> 
+	});
+});
+<?php $this->headScript()->captureEnd() ?>
+<div class="sensorGraph">
 	<div class="chart rickshaw_graph"></div>
 	<div class="slider"></div>
 	<div class="legend_container">
 		<div class="legend rickshaw_legend"></div>
 	</div>
-	<div class="fetchResults"><small>&lt; get earlier results</small></div>
+	<!-- functionality to be readded <div class="fetchResults"><small>&lt; get earlier results</small></div>  -->
 </div>

@@ -18,4 +18,10 @@
 	//close the last row if it wasn't the exact width
 	if (!$this->counter()->isLastInColumn('finish'.$id, $this->columns)) echo '</div>';
 ?>
+
+<?php 
+	//output graph - temporary method until ajax is implemented
+	$sensorValues = $this->sensorvalue()->lastDaysValues($this->node);
+	echo $this->partial('watering-system/partials/sensorgraph.phtml', array('sensorValues' => $sensorValues, 'container' => $this->container));
+?>
 </div>

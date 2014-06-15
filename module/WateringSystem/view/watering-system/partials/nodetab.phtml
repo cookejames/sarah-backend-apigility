@@ -1,5 +1,6 @@
 <div class="sensorReadings">
 <?php
+
 	$id = $this->node->getId();
 	//output the latest sensor values
 	foreach ($this->sensors as $sensor) {
@@ -16,12 +17,12 @@
 		if ($this->counter()->isLastInColumn('close'.$id, $this->columns)) echo '</div>';
 	}
 	//close the last row if it wasn't the exact width
-	if (!$this->counter()->isLastInColumn('finish'.$id, $this->columns)) echo '</div>';
-?>
+	if (!$this->counter()->isFirstInColumn('close'.$id, $this->columns)) echo '</div>';
 
+?>
+</div>
 <?php 
 	//output graph - temporary method until ajax is implemented
 	$sensorValues = $this->sensorvalue()->lastDaysValues($this->node);
 	echo $this->partial('watering-system/partials/sensorgraph.phtml', array('sensorValues' => $sensorValues, 'container' => $this->container));
 ?>
-</div>

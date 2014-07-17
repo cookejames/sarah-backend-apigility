@@ -94,17 +94,17 @@ module.exports = function(grunt) {
 	        	files: [
 	        	        'assets/less/**/*.less'
     	        ], //watched files
-	        	tasks: ['newer:less', 'newer:cssmin'], //tasks to run
+	        	tasks: ['less', 'cssmin'], //tasks to run
 	        },
 	        css: {
 	        	files: [
 	        	        'assets/css/**/*.css'
     	        ], //watched files
-	        	tasks: ['newer:less', 'newer:cssmin'], //tasks to run
+	        	tasks: ['less', 'cssmin'], //tasks to run
 	        },
 	        public_html: {
 	        	files: [
-	        	        'public_html/**/*.{css,js}'
+	        	        'public/**/*.{css,js}'
     	        ],
     	        options: {
     	        	livereload: true

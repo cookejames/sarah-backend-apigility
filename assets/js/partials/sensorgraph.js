@@ -8,10 +8,12 @@
 			legendElement:	'.legend',
 			sliderElement:	'.slider',
 			responsive:		true,
+			smooth:			2
 		},
 		
 		_create: function() {
 			this._addColorToValues(this.options.values, this.options.palette);
+			this._addScaleToValues(this.options.values);
 			this.graph = this._createGraph(this.options.values);
 			this.hoverDetail = this._createHoverDetail(this.graph);
 			this.legend = this._createLegend(this.graph);
@@ -42,13 +44,19 @@
 			$.each(values, function(index, value){
 				value.color = palette.color();
 				value.yFormatter = function(y){
-					var scaled =  y / value.scalingFactor;
 					if (value.valueType == 'float') {
-						return scaled.toFixed(2) + value.units;
+						return y.toFixed(2) + value.units;
 					} else {
-						return parseInt(scaled) + value.units;
+						return parseInt(y) + value.units;
 					}
 				};
+			});
+		},
+		
+		_addScaleToValues: function(values) {
+			$.each(values, function(index, value){
+				value.scale = d3.scale.linear()
+					.domain([0, d3.max(value.data, function(d){return d.y;})]);
 			});
 		},
 		
@@ -63,6 +71,13 @@
 				series: values
 			} );
 			graph.render();
+			
+			//create the graph smoother
+			var smoother = new Rickshaw.Graph.Smoother( {
+				graph: graph,
+			} );
+			smoother.setScale(this.options.smooth);
+			
 			return graph;
 		},
 		

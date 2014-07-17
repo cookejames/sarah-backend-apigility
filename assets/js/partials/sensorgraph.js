@@ -8,7 +8,7 @@
 			legendElement:	'.legend',
 			sliderElement:	'.slider',
 			responsive:		true,
-			smooth:			2
+			smooth:			8
 		},
 		
 		_create: function() {
@@ -48,8 +48,13 @@
 		
 		_addScaleToValues: function(values) {
 			$.each(values, function(index, value){
-				value.scale = d3.scale.linear()
-					.domain([0, d3.max(value.data, function(d){return d.y;})]);
+				var range;
+				if (value.graphStart == null) {
+					range = d3.extent(value.data, function(d){return d.y;});
+				} else {
+					range = [value.graphStart, d3.max(value.data, function(d){return d.y;})];
+				}
+				value.scale = d3.scale.linear().domain(range);
 			});
 		},
 		

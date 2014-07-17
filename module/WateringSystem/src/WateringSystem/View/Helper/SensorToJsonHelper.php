@@ -23,6 +23,7 @@ class SensorToJsonHelper extends AbstractHelper
 					$data[$sensorValue->getSensor()->getId()] = array(
 						'name'			=> $sensorValue->getSensor()->getDescription(),
 						'data'			=> array(),
+						'graphStart'		=> $sensorValue->getSensor()->getGraphStart(),
 						'valueType'		=> $sensorValue->getSensor()->getValueType(),
 						'units'			=> $sensorValue->getSensor()->getUnits(),
 					);

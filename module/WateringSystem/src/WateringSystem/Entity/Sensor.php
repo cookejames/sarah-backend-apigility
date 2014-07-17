@@ -41,6 +41,8 @@ class Sensor implements WateringSystemEntityInterface
 	private $rangeMax;
 	/** @ORM\Column(type="float") */
 	private $calibration;
+	/** @ORM\Column(type="float") */
+	private $graphStart;
 	/** @ORM\Column(type="boolean") */
 	private $isEnabled;
 	/** is this sensor used to determine if we will trigger the watering 
@@ -304,4 +306,19 @@ class Sensor implements WateringSystemEntityInterface
 		$this->node = $node;
 		return $this;
 	}
+	/**
+	 * @return the $startGraphFrom
+	 */
+	public function getGraphStart() {
+		return $this->graphStart;
+	}
+
+	/**
+	 * @param field_type $graphStart
+	 */
+	public function setGraphStart($graphStart) {
+		$this->graphStart = $graphStart;
+		return $this;
+	}
+
 }

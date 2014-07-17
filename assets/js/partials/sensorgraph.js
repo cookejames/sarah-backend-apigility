@@ -43,13 +43,6 @@
 			//add color to each element
 			$.each(values, function(index, value){
 				value.color = palette.color();
-				value.yFormatter = function(y){
-					if (value.valueType == 'float') {
-						return y.toFixed(2) + value.units;
-					} else {
-						return parseInt(y) + value.units;
-					}
-				};
 			});
 		},
 		
@@ -90,6 +83,11 @@
 		        xFormatter: function(x) {
 		            return new Date(x * 1000).toString(); 
 		        },
+		        formatter: function(series, x, y, formattedX, formattedY, d) {
+		        	var value = (series.valueType == 'float') ? formattedY : parseInt(y);
+		        	value += (series.units) ? series.units : ''; 
+		        	return series.name + ':&nbsp;' + value;
+		        }
 			});
 			
 			return hoverDetail;

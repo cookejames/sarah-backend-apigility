@@ -14,7 +14,7 @@ class SensorToJsonHelper extends AbstractHelper
 	 * @param Sensor[] $sensor
 	 * @param SensorValue[] $sensorValues
 	 */
-	public function __invoke(array $sensorValues, $useScaledValues = false, $returnEncoded = true)
+	public function __invoke(array $sensorValues, $returnEncoded = true)
 	{
 		$data = array();
 		foreach ($sensorValues as $sensorValue) {
@@ -23,16 +23,14 @@ class SensorToJsonHelper extends AbstractHelper
 					$data[$sensorValue->getSensor()->getId()] = array(
 						'name'			=> $sensorValue->getSensor()->getDescription(),
 						'data'			=> array(),
-						'scalingFactor'	=> $sensorValue->getSensor()->getScalingFactor(),
 						'valueType'		=> $sensorValue->getSensor()->getValueType(),
 						'units'			=> $sensorValue->getSensor()->getUnits(),
 					);
 				}
 				
-				$value = ($useScaledValues) ? $sensorValue->getScaledValue() : $sensorValue->getCalibratedValue();
 				$data[$sensorValue->getSensor()->getId()]['data'][] = array(
 					'x' => $sensorValue->getDate()->getTimestamp(),
-					'y' => $value,
+					'y' => $sensorValue->getCalibratedValue(),
 				);
 			}
 		}

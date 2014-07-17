@@ -6,7 +6,7 @@
 <?php $this->headScript()->captureStart() ?>
 jQuery(document).ready(function($){
 	$('<?php echo $this->container?>').find('.sensorGraph').sensorgraph({
-		values: <?php echo $this->sensorToJson($sensorValues, false); ?> 
+		values: <?php echo $this->sensorToJson($sensorValues); ?> 
 	});
 });
 <?php $this->headScript()->captureEnd() ?>

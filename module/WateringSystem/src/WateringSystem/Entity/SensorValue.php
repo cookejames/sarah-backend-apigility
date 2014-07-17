@@ -87,29 +87,6 @@ class SensorValue implements WateringSystemEntityInterface
 		
 		return $value;
 	}
-	
-	/**
-	 * Get the value scaled according to the scaling factor
-	 * @return boolean|float|int|string
-	 */
-	public function getScaledValue() {
-		$value = $this->getCalibratedValue();
-		
-		switch ($this->getSensor()->getValueType()) {
-			case Sensor::TYPE_BOOLEAN:
-				$value *= $this->getSensor()->getScalingFactor();
-				break;
-			case Sensor::TYPE_FLOAT:
-				$value *= $this->getSensor()->getScalingFactor();
-				break;
-			case Sensor::TYPE_INT:
-				$value *= $this->getSensor()->getScalingFactor();
-				$value = (int) $value;
-				break;
-		}
-		
-		return $value;
-	}
 
 	/**
 	 * @param field_type $value

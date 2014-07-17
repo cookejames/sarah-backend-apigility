@@ -40,8 +40,6 @@ class Sensor implements WateringSystemEntityInterface
 	/** @ORM\Column(type="float") */
 	private $rangeMax;
 	/** @ORM\Column(type="float") */
-	private $scalingFactor;
-	/** @ORM\Column(type="float") */
 	private $calibration;
 	/** @ORM\Column(type="boolean") */
 	private $isEnabled;
@@ -205,20 +203,6 @@ class Sensor implements WateringSystemEntityInterface
 		}
 		
 		return null;
-	}
-	/**
-	 * @return the $scalingFactor
-	 */
-	public function getScalingFactor() {
-		return $this->scalingFactor;
-	}
-
-	/**
-	 * @param field_type $scalingFactor
-	 */
-	public function setScalingFactor($scalingFactor) {
-		$this->scalingFactor = $scalingFactor;
-		return $this;
 	}
 	/**
 	 * @return the $isEnabled

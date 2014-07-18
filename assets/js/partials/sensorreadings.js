@@ -10,6 +10,7 @@
 		_create: function() {
 			this._registerHelpers();
 			this.update(this.options.values);
+			this._createTimer();
 		},
 		
 		_registerHelpers: function() {
@@ -48,7 +49,8 @@
 		},
 		
 		_createTimer: function() {
-			this.timer = setInterval(this.update(this.options.values), this.options.updateInterval);
+			var self = this;
+			this.timer = setInterval(function(){self.update(self.options.values);}, this.options.updateInterval);
 		},
 		
 		_getTemplateHtml: function(sensor) {

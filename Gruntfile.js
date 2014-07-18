@@ -46,6 +46,7 @@ module.exports = function(grunt) {
 						'public/js/site.js': [
 		  				    'bower_components/jquery/dist/jquery.js',
 						    'bower_components/jquery-ui/ui/jquery-ui.js',
+						    'bower_components/jquery-ui-touch-punch-valid/jquery.ui.touch-punch.js',
 						    'bower_components/bootstrap/dist/js/bootstrap.js',
 						    'bower_components/rickshaw/vendor/d3.min.js',
 						    'bower_components/rickshaw/vendor/d3.layout.min.js',

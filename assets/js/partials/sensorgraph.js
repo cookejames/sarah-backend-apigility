@@ -8,7 +8,7 @@
 			legendElement:	'.legend',
 			sliderElement:	'.slider',
 			responsive:		true,
-			smooth:			8
+			smooth:			4.5
 		},
 		
 		_create: function() {

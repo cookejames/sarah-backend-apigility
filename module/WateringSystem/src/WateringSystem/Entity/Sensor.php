@@ -321,4 +321,10 @@ class Sensor implements WateringSystemEntityInterface
 		return $this;
 	}
 
+	public function toArray()
+	{
+		$array = get_object_vars($this);
+		unset($array['node']);
+		return $array;
+	}
 }

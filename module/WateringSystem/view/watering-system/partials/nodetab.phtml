@@ -1,3 +1,17 @@
+<?php
+	//add the sensor readings js to the head
+	$sensors = $this->sensors;
+	if (count($sensors) == 0) return;
+	$this->headscript()->prependFile($this->basePath() . '/js/partials/sensorreadings.js');
+?>
+<?php $this->headScript()->captureStart() //instantiate a sensor readings object?>
+jQuery(document).ready(function($){
+	$('<?php echo $this->container?>').find('.sensorReadings').sensorreadings({
+		values: <?php echo $this->sensorToJson()->getSensorValuesJson($sensors); ?> 
+	});
+});
+<?php $this->headScript()->captureEnd() ?>
+
 <div class="sensorReadings">
 <?php
 
@@ -12,7 +26,7 @@
 		//open the column
 		if ($this->counter()->isFirstInColumn('open'.$id, $this->columns)) echo '<div>';
 			//output the sensor details
-			echo $this->partial('watering-system/partials/sensordisplay.phtml', array('sensor' => $sensor));
+			echo '<div id="sensor' . $sensor->getId() . '"></div>';
 		//close the row at the end of the column
 		if ($this->counter()->isLastInColumn('close'.$id, $this->columns)) echo '</div>';
 	}

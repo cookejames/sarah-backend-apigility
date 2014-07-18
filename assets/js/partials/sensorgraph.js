@@ -19,7 +19,8 @@
 			this.legend = this._createLegend(this.graph);
 			this.slider = this._createSlider(this.graph);
 			this._createAxis(this.graph);
-
+			this._mapTouchToMouseEvents($(this.graph.element));
+			
 			if (this.options.responsive) {
 				this.makeResponsive();
 			}
@@ -180,6 +181,28 @@
 				width: width,
 			});
 			this.graph.render();
+		},
+		
+		/**
+		 * Map the touchmove event to mousemove to show hover details when dragging
+		 */
+		_mapTouchToMouseEvents: function(element) {
+			element.on('touchmove', function(event){
+				//required on android to get touch events as you drag
+				if( navigator.userAgent.match(/Android/i) ) {
+					event.preventDefault();
+				}
+				
+				var touches = event.originalEvent.changedTouches;
+				var first = touches[0];
+				
+			    var simulatedEvent = document.createEvent("MouseEvent");
+			    simulatedEvent.initMouseEvent('mousemove', true, true, window, 1, 
+			    		first.screenX, first.screenY, 
+			    		first.clientX, first.clientY, false, 
+			    		false, false, false, 0, null);
+			    event.target.dispatchEvent(simulatedEvent);
+			});
 		}
 	});
 }( jQuery ));

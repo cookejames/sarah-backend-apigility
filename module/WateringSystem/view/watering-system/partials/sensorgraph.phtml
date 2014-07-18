@@ -6,7 +6,8 @@
 <?php $this->headScript()->captureStart() ?>
 jQuery(document).ready(function($){
 	$('<?php echo $this->container?>').find('.sensorGraph').sensorgraph({
-		values: <?php echo $this->sensorToJson()->getGraphData($sensorValues); ?> 
+		values: <?php echo $this->sensorToJson()->getGraphData($sensorValues); ?>,
+		node:	<?php echo $this->node; ?>
 	});
 });
 <?php $this->headScript()->captureEnd() ?>
@@ -16,5 +17,5 @@ jQuery(document).ready(function($){
 	<div class="legend_container">
 		<div class="legend rickshaw_legend"></div>
 	</div>
-	<!-- functionality to be readded <div class="fetchResults"><small>&lt; get earlier results</small></div>  -->
+	<div class="fetchResults"><small>&lt; get earlier results</small></div>
 </div>

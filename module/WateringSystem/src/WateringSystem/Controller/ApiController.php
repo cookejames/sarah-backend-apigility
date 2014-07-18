@@ -5,6 +5,7 @@ use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
 use WateringSystem\Entity\Sensor;
 use WateringSystem\Entity\SensorValue;
+use WateringSystem\Entity\Node;
 
 class ApiController extends WateringSystemControllerAbstract
 {
@@ -18,21 +19,29 @@ class ApiController extends WateringSystemControllerAbstract
     public function fetchSensorValuesAction()
     {
     	$request = $this->getRequest();
-    	if ($request->isPost() && $request->getPost('before', false)) {
+    	if ($request->isPost() && $request->getPost('before', false)
+    			 && $request->getPost('node', false)) {
     		try {
     			//get the maximum date
     			$before = $request->getPost('before');
-    			$to = \DateTime::createFromFormat('Y-m-d H:i:s', $before);
+    			$nodeId = $request->getPost('node');
+    			
+    			$to = \DateTime::createFromFormat('U', $before);
     			if (!$to) {
     				throw new \Exception('invalid date format');
+    			}
+    			
+    			$node = $this->getNodeModel()->getNodeById($nodeId);
+    			if (!$node instanceof Node) {
+    				throw new \Exception('invalid node id');
     			}
     			
     			$from = clone $to;
     			$from->sub(new \DateInterval('P1D'));
     			
-    			$sensorValues = $this->getSensorValueModel()->getSensorValuesBetween($from, $to, 'ASC');
+    			$sensorValues = $this->getSensorValueModel()->getSensorValuesBetween($from, $to, $node, 'ASC');
     			$helper = $this->getServiceLocator()->get('viewhelpermanager')->get('SensorToJson');
-    			return new JsonModel(array('result' => $helper($sensorValues, true, false)));
+    			return new JsonModel(array('result' => $helper()->getGraphData($sensorValues, false)));
     		} catch (\Exception $e) {
     			return new JsonModel(array('result' => false, 'message' => $e->getMessage()));
     		}

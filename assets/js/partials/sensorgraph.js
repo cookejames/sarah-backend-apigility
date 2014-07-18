@@ -2,13 +2,15 @@
 	'use strict';
 	$.widget('drhouse.sensorgraph', {
 		options: {
-			palette:		new Rickshaw.Color.Palette(),
-			values:			{},
-			chartElement:	'.chart',
-			legendElement:	'.legend',
-			sliderElement:	'.slider',
-			responsive:		true,
-			smooth:			4.5
+			palette:			new Rickshaw.Color.Palette(),
+			values:				{},
+			node:				0,
+			chartElement:		'.chart',
+			legendElement:		'.legend',
+			sliderElement:		'.slider',
+			fetchMoreElement:	'.fetchResults',
+			responsive:			true,
+			smooth:				4.5
 		},
 		
 		_create: function() {
@@ -20,10 +22,43 @@
 			this.slider = this._createSlider(this.graph);
 			this._createAxis(this.graph);
 			this._mapTouchToMouseEvents($(this.graph.element));
-			
+			this._enableFetchEarlierResults();
 			if (this.options.responsive) {
 				this.makeResponsive();
 			}
+		},
+		
+		_enableFetchEarlierResults: function() {
+			var self = this;
+
+			//fetch more results on click
+			this.element.find(this.options.fetchMoreElement).click(function(){				
+				var domain = self.graph.dataDomain();
+				
+				$.post(
+					'/api/fetch-sensor-values',
+					{
+						before:	domain[0],
+						node:	self.options.node
+					},
+					function(data, textStatus, jqXHR){
+						if (data.result && data.result.length > 0) {
+							//iterate through the result and prepend our graph data
+							$.each(data.result, function(index, sensor){
+								$.each(self.options.values, function(index, graphSensor){
+									if (sensor.name == graphSensor.name) {
+										graphSensor.data = sensor.data.concat(graphSensor.data);
+									}
+								});
+							});
+							//update the graph
+							self._addScaleToValues(self.options.values);
+							self.graph.update();
+						}
+					},
+					'json'
+				);
+			});
 		},
 		
 		/**
@@ -137,39 +172,6 @@
 			} );
 			x_axis.render();
 		},
-		
-		/* will re-add functionality later
-		//fetch more results on click
-		$('#sensorGraph .fetchResults').click(function(){
-			var self = this;
-			$(self).hide();
-			$.post(
-				'/api/fetch-sensor-values',
-				{
-					before: FIRST_VALUE
-				},
-				function(data, textStatus, jqXHR){
-					if (data.result && data.result.length > 0) {
-						//show the button if we have a valid result
-						$(self).show();
-						//iterate through the result and prepend our graph data
-						$.each(data.result, function(index, sensor){
-							$.each(SENSOR_VALUES, function(index, graphSensor){
-								if (sensor.name == graphSensor.name) {
-									graphSensor.data = sensor.data.concat(graphSensor.data);
-								}
-							});
-						});
-						///update the first value we have
-						FIRST_VALUE = data.result[0].data[0].x_date;
-						//update the graph
-						graph.update();
-					}
-				},
-				'json'
-			);
-		});
-		*/
 		
 		/**
 		 * Resize the graph to the size of its parent element

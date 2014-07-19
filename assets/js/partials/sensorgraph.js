@@ -3,20 +3,82 @@
 	$.widget('drhouse.sensorgraph', {
 		options: {
 			palette:			new Rickshaw.Color.Palette(),
-			values:				{},
+			values:				null,
 			node:				0,
+			loaderContainer:	'.chartLoader',
+			chartContainer:		'.chartContainer',
 			chartElement:		'.chart',
 			legendElement:		'.legend',
 			sliderElement:		'.slider',
 			fetchMoreElement:	'.fetchResults',
+			height:				300,
 			responsive:			true,
 			smooth:				4.5
 		},
 		
 		_create: function() {
-			this._addColorToValues(this.options.values, this.options.palette);
-			this._addScaleToValues(this.options.values);
-			this.graph = this._createGraph(this.options.values);
+			if (this.options.values) {
+				//values already provided, show the chart
+				this.values = this.options.values;
+				this._instantiateGraph(this.values);
+			} else {
+				//get initial values by ajax
+				var self = this;
+				
+				//hide the chart and show the loader
+				this.hideChart();
+				this.showLoader();
+				
+				//fetch the values by ajax
+				var now = parseInt(Date.now()/1000);
+				this._fetchData(now, function(data){
+					if (data.result && data.result.length > 0) {
+						self.values = data.result;
+						self._instantiateGraph(self.values);
+						self.hideLoader(800, self.showChart(400));
+					}
+				});
+			}
+			
+			
+		},
+		
+		/**
+		 * Show the ajax loader
+		 */
+		showLoader: function() {
+			this.element.find(this.options.loaderContainer).height(this.options.height).show();
+		},
+		
+		/**
+		 * Hide the ajax loader
+		 */
+		hideLoader: function(duration, complete) {
+			this.element.find(this.options.loaderContainer).slideUp(duration, complete);
+		},
+		
+		/**
+		 * Show the chart
+		 */
+		showChart: function(duration) {
+			this.element.find(this.options.chartContainer).slideDown(duration);
+			this.resizeGraph();
+		},
+		
+		/**
+		 * Hide the chart
+		 */
+		hideChart: function() {
+			this.element.find(this.options.chartContainer).hide();
+		},
+		
+		/**
+		 * Create a graph and all its support structures
+		 */
+		_instantiateGraph: function(values) {
+			this._addColorToValues(values, this.options.palette);
+			this._addScaleToValues(values);
+			this.graph = this._createGraph(values);
 			this.hoverDetail = this._createHoverDetail(this.graph);
 			this.legend = this._createLegend(this.graph);
 			this.slider = this._createSlider(this.graph);
@@ -28,6 +90,9 @@
 			}
 		},
 		
+		/**
+		 * Enable fetching earlier results via the fetch earlier results link 
+		 */
 		_enableFetchEarlierResults: function() {
 			var self = this;
 
@@ -35,30 +100,38 @@
 			this.element.find(this.options.fetchMoreElement).click(function(){				
 				var domain = self.graph.dataDomain();
 				
-				$.post(
+				self._fetchData(domain[0], function(data, textStatus, jqXHR){
+					if (data.result && data.result.length > 0) {
+						//iterate through the result and prepend our graph data
+						$.each(data.result, function(index, sensor){
+							$.each(self.values, function(index, graphSensor){
+								if (sensor.name == graphSensor.name) {
+									graphSensor.data = sensor.data.concat(graphSensor.data);
+								}
+							});
+						});
+						//update the graph
+						self._addScaleToValues(self.values);
+						self.graph.update();
+					}
+				});
+			});
+		},
+		
+		/**
+		 * Fetch data from the server
+		 */
+		_fetchData: function(before, success) {
+			var self = this;
+			$.post(
 					'/api/fetch-sensor-values',
 					{
-						before:	domain[0],
+						before:	before,
 						node:	self.options.node
-					},
-					function(data, textStatus, jqXHR){
-						if (data.result && data.result.length > 0) {
-							//iterate through the result and prepend our graph data
-							$.each(data.result, function(index, sensor){
-								$.each(self.options.values, function(index, graphSensor){
-									if (sensor.name == graphSensor.name) {
-										graphSensor.data = sensor.data.concat(graphSensor.data);
-									}
-								});
-							});
-							//update the graph
-							self._addScaleToValues(self.options.values);
-							self.graph.update();
-						}
-					},
+					}, 
+					success,
 					'json'
 				);
-			});
 		},
 		
 		/**
@@ -82,6 +155,9 @@
 			});
 		},
 		
+		/**
+		 * Add a scale to all the values
+		 */
 		_addScaleToValues: function(values) {
 			$.each(values, function(index, value){
 				var range;
@@ -179,10 +255,13 @@
 		resizeGraph: function() {
 			var width = this.element.parent().width();
 			this.element.find(this.options.sliderElement).width(width);
-			this.graph.configure({
-				width: width,
-			});
-			this.graph.render();
+			
+			if (this.graph) {
+				this.graph.configure({
+					width: width,
+				});
+				this.graph.render();
+			}
 		},
 		
 		/**

@@ -35,8 +35,7 @@ jQuery(document).ready(function($){
 
 ?>
 </div>
-<?php 
-	//output graph - temporary method until ajax is implemented
-	$sensorValues = $this->sensorvalue()->lastDaysValues($this->node);
-	echo $this->partial('watering-system/partials/sensorgraph.phtml', array('sensorValues' => $sensorValues, 'container' => $this->container, 'node' => $id));
+<?php
+	//sensor graph 
+	echo $this->partial('watering-system/partials/sensorgraph.phtml', array('container' => $this->container, 'node' => $id));
 ?>

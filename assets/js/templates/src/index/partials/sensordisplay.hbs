@@ -3,15 +3,15 @@
 		<div class="title">
 			{{description}}
 		</div>
-		<div class="value">{{#if value}}{{value}}{{units}}{{else}}--{{/if}}</div>
+		<div class="value">{{#exists value}}{{value}}{{units}}{{else}}--{{/exists}}</div>
 		<div class="time">
 			<small>{{fuzzyDate timestamp}}</small>
 		</div>
 		{{#if isRanged}}
 		<div class="progress progress-striped">
-			{{#if value}}
+			{{#exists value}}
 			<div class="progress-bar progress-bar-info" style="width: {{percentage value rangeMax rangeMin}}%"></div>
-			{{/if}}
+			{{/exists}}
 		</div>
 		{{/if}}
 	</div>

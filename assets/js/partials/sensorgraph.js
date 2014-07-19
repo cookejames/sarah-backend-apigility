@@ -11,9 +11,12 @@
 			legendElement:		'.legend',
 			sliderElement:		'.slider',
 			fetchMoreElement:	'.fetchResults',
+			axisElement:		'.yAxis',
 			height:				300,
+			axisWidth:			45,
 			responsive:			true,
-			smooth:				4.5
+			smooth:				4.5,
+			pixelsPerTick:		40
 		},
 		
 		_create: function() {
@@ -41,6 +44,22 @@
 			}
 			
 			
+		},
+		
+		_createYAxis: function(graph) {
+			var axis = new Rickshaw.Graph.Axis.Y.Scaled( {
+				graph:			graph,
+				orientation:	'right', //ticks to the right
+				tickFormat:		Rickshaw.Fixtures.Number.formatKMBT,
+				element:		this.element.find(this.options.axisElement)[0],
+				height:			this.options.height,
+				scale:			this.values[0].scale, //set an initial scale
+				width:			this.options.axisWidth,
+				pixelsPerTick:	this.options.pixelsPerTick, //how often to display ticks
+				grid:			false
+			} );
+			this._setAxisStyleBySeries(axis, this.values[0]);
+			return axis;
 		},
 		
 		/**
@@ -82,7 +101,8 @@
 			this.hoverDetail = this._createHoverDetail(this.graph);
 			this.legend = this._createLegend(this.graph);
 			this.slider = this._createSlider(this.graph);
-			this._createAxis(this.graph);
+			this._createXAxis(this.graph);
+			this.yAxis = this._createYAxis(this.graph);
 			this._mapTouchToMouseEvents($(this.graph.element));
 			this._enableFetchEarlierResults();
 			if (this.options.responsive) {
@@ -197,6 +217,8 @@
 		 * Create the graph hover details with date formatting
 		 */
 		_createHoverDetail: function(graph) {
+			var self = this;
+			
 			var hoverDetail = new Rickshaw.Graph.HoverDetail({
 				graph: graph,
 		        xFormatter: function(x) {
@@ -205,11 +227,24 @@
 		        formatter: function(series, x, y, formattedX, formattedY, d) {
 		        	var value = (series.valueType == 'float') ? formattedY : parseInt(y);
 		        	value += (series.units) ? series.units : ''; 
+		        	self._setAxisStyleBySeries(self.yAxis, series);
 		        	return series.name + ':&nbsp;' + value;
 		        }
 			});
 			
 			return hoverDetail;
+		},
+		
+		/**
+		 * Set the style of the axis to match this series
+		 */
+		_setAxisStyleBySeries: function(axis, series) {
+        	axis.scale = series.scale;
+        	axis.render();
+        	$(axis.element)
+        		.css('fill', series.color)
+        		.find('path.domain')
+        		.css('stroke', series.color);
 		},
 	
 		/**
@@ -244,11 +279,12 @@
 		/**
 		 * Create graph axis
 		 */
-		_createAxis: function(graph) {
-			var x_axis = new Rickshaw.Graph.Axis.Time( {
+		_createXAxis: function(graph) {
+			var xAxis = new Rickshaw.Graph.Axis.Time( {
 				graph: graph
 			} );
-			x_axis.render();
+			xAxis.render();
+			return xAxis;
 		},
 		
 		/**
@@ -260,7 +296,7 @@
 			
 			if (this.graph) {
 				this.graph.configure({
-					width: width,
+					width: width - this.options.axisWidth,
 				});
 				this.graph.render();
 			}

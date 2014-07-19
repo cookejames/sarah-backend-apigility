@@ -19,15 +19,17 @@ class ApiController extends WateringSystemControllerAbstract
     public function fetchSensorValuesAction()
     {
     	$request = $this->getRequest();
-    	if ($request->isPost() && $request->getPost('before', false)
-    			 && $request->getPost('node', false)) {
+    	if ($request->isPost() && $request->getPost('node', false)
+    			 && $request->getPost('from', false) && $request->getPost('to', false)) {
     		try {
     			//get the maximum date
-    			$before = $request->getPost('before');
+    			$fromTimestamp = $request->getPost('from');
+    			$toTimestamp = $request->getPost('to');
     			$nodeId = $request->getPost('node');
     			
-    			$to = \DateTime::createFromFormat('U', $before);
-    			if (!$to) {
+    			$to = \DateTime::createFromFormat('U', $toTimestamp);
+    			$from = \DateTime::createFromFormat('U', $fromTimestamp);
+    			if (!$to || !$to) {
     				throw new \Exception('invalid date format');
     			}
     			
@@ -36,12 +38,14 @@ class ApiController extends WateringSystemControllerAbstract
     				throw new \Exception('invalid node id');
     			}
     			
-    			$from = clone $to;
-    			$from->sub(new \DateInterval('P1D'));
-    			
     			$sensorValues = $this->getSensorValueModel()->getSensorValuesBetween($from, $to, $node, 'ASC');
     			$helper = $this->getServiceLocator()->get('viewhelpermanager')->get('SensorToJson');
-    			return new JsonModel(array('result' => $helper()->getGraphData($sensorValues, false)));
+    			return new JsonModel(array(
+    					'result'	=> $helper()->getGraphData($sensorValues, false),
+    					'from'		=> $fromTimestamp,
+    					'to'		=> $toTimestamp,
+    					'node'		=> $nodeId
+    			));
     		} catch (\Exception $e) {
     			return new JsonModel(array('result' => false, 'message' => $e->getMessage()));
     		}

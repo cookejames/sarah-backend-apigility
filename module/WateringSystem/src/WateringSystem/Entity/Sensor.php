@@ -325,6 +325,10 @@ class Sensor implements WateringSystemEntityInterface
 	{
 		$array = get_object_vars($this);
 		unset($array['node']);
+		$keys = preg_grep('/^__(.)+__$/', array_keys($array));
+		foreach ($keys as $key) {
+			unset($array[$key]);
+		}
 		return $array;
 	}
 }

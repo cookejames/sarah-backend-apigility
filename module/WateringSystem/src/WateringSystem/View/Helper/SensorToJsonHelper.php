@@ -3,10 +3,13 @@
 namespace WateringSystem\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use WateringSystem\Entity\Sensor;
 use WateringSystem\Entity\SensorValue;
+use Doctrine\ORM\EntityManager;
 
-class SensorToJsonHelper extends AbstractHelper
+class SensorToJsonHelper extends AbstractHelper implements ServiceLocatorAwareInterface 
 {
 	public function __invoke()
 	{
@@ -23,15 +26,12 @@ class SensorToJsonHelper extends AbstractHelper
 		foreach ($sensorValues as $sensorValue) {
 			if ($sensorValue instanceof SensorValue) {
 				if (!isset($data[$sensorValue->getSensor()->getId()])) {
-					$data[$sensorValue->getSensor()->getId()] = array(
-							'name'			=> $sensorValue->getSensor()->getDescription(),
-							'data'			=> array(),
-							'graphStart'		=> $sensorValue->getSensor()->getGraphStart(),
-							'valueType'		=> $sensorValue->getSensor()->getValueType(),
-							'units'			=> $sensorValue->getSensor()->getUnits(),
-					);
+					$sensor = $sensorValue->getSensor();
+					$this->getEntityManager()->initializeObject($sensor);
+					$data[$sensorValue->getSensor()->getId()] = $sensor->toArray();
+					$data[$sensorValue->getSensor()->getId()]['data'] = array();
 				}
-		
+				
 				$data[$sensorValue->getSensor()->getId()]['data'][] = array(
 						'x' => $sensorValue->getDate()->getTimestamp(),
 						'y' => $sensorValue->getCalibratedValue(),
@@ -78,5 +78,34 @@ class SensorToJsonHelper extends AbstractHelper
 		}
 		
 		return ($returnEncoded) ? json_encode($data) : $data;
+	}
+	
+	/**
+	 * Set service locator
+	 *
+	 * @param ServiceLocatorInterface $serviceLocator
+	 * @return mixed
+	 */
+	public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
+		$this->serviceLocator = $serviceLocator;
+	
+		return $this;
+	}
+	
+	/**
+	 * Get service locator
+	 *
+	 * @return ServiceLocatorInterface
+	 */
+	public function getServiceLocator() {
+		return $this->serviceLocator->getServiceLocator();
+	}
+	
+	/**
+	 * @return EntityManager
+	 */
+	protected function getEntityManager()
+	{
+		return $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
 	}
 }

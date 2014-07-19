@@ -16,7 +16,8 @@
 			axisWidth:			45,
 			responsive:			true,
 			smooth:				4.5,
-			pixelsPerTick:		40
+			pixelsPerTick:		40,
+			defaultPeriod:		24*60*60 //24 hours
 		},
 		
 		_create: function() {
@@ -34,7 +35,8 @@
 				
 				//fetch the values by ajax
 				var now = parseInt(Date.now()/1000);
-				this._fetchData(now, function(data){
+				var from = now - this.options.defaultPeriod;
+				this._fetchData(from, now, function(data){
 					if (data.result && data.result.length > 0) {
 						self.values = data.result;
 						self._instantiateGraph(self.values);
@@ -94,7 +96,7 @@
 		 * Create a graph and all its support structures
 		 */
 		_instantiateGraph: function(values) {
-			this._addColorToValues(values, this.options.palette);
+			this._prepareValues(values, this.options.palette);
 			this._addScaleToValues(values);
 			this.graph = this._createGraph(values);
 			this.hoverDetail = this._createHoverDetail(this.graph);
@@ -120,12 +122,18 @@
 				var domain = self.graph.dataDomain();
 				var element = this;
 				$(element).addClass('loading');
-				self._fetchData(domain[0], function(data, textStatus, jqXHR){
+				var to = domain[0];
+				var from = to - self.options.defaultPeriod;
+				self._fetchData(from, to, function(data, textStatus, jqXHR){
 					if (data.result && data.result.length > 0) {
+						//check that the to is still the same as our domain
+						var currentDomain = self.graph.dataDomain();
+						if (currentDomain[0] != data.to) return;
+						
 						//iterate through the result and prepend our graph data
 						$.each(data.result, function(index, sensor){
 							$.each(self.values, function(index, graphSensor){
-								if (sensor.name == graphSensor.name) {
+								if (sensor.id == graphSensor.id) {
 									graphSensor.data = sensor.data.concat(graphSensor.data);
 								}
 							});
@@ -142,12 +150,13 @@
 		/**
 		 * Fetch data from the server
 		 */
-		_fetchData: function(before, success) {
+		_fetchData: function(from, to, success) {
 			var self = this;
 			$.post(
 					'/api/fetch-sensor-values',
 					{
-						before:	before,
+						from:	from,
+						to:		to,
 						node:	self.options.node
 					}, 
 					success,
@@ -167,12 +176,13 @@
 		},
 		
 		/**
-		 * Add palette colors to each of the sensor values
+		 * Add palette colors to each of the sensor values and sets name = description
 		 */
-		_addColorToValues: function(values, palette) {
+		_prepareValues: function(values, palette) {
 			//add color to each element
 			$.each(values, function(index, value){
 				value.color = palette.color();
+				value.name = value.description;
 			});
 		},
 		

@@ -50,7 +50,6 @@
 			var axis = new Rickshaw.Graph.Axis.Y.Scaled( {
 				graph:			graph,
 				orientation:	'right', //ticks to the right
-				tickFormat:		Rickshaw.Fixtures.Number.formatKMBT,
 				element:		this.element.find(this.options.axisElement)[0],
 				height:			this.options.height,
 				scale:			this.values[0].scale, //set an initial scale

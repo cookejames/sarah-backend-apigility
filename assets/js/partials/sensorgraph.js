@@ -99,7 +99,8 @@
 			//fetch more results on click
 			this.element.find(this.options.fetchMoreElement).click(function(){				
 				var domain = self.graph.dataDomain();
-				
+				var element = this;
+				$(element).addClass('loading');
 				self._fetchData(domain[0], function(data, textStatus, jqXHR){
 					if (data.result && data.result.length > 0) {
 						//iterate through the result and prepend our graph data
@@ -113,6 +114,7 @@
 						//update the graph
 						self._addScaleToValues(self.values);
 						self.graph.update();
+						$(element).removeClass('loading');
 					}
 				});
 			});

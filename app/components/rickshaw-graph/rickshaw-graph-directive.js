@@ -79,7 +79,7 @@ angular.module('rickshawGraph', []).directive('rickshawGraph', function($compile
 			 * @returns {number}
 			 */
 			function getGraphWidth() {
-				var width = angular.element(element).width() - settings.axisWidth;
+				var width = element.width() - settings.axisWidth;
 				return (width < 0) ? 0 : width;
 			}
 

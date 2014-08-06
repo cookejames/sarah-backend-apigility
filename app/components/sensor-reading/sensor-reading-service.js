@@ -44,7 +44,7 @@ function ($rootScope, Restangular, orderByFilter, limitToFilter, filterFilter) {
 
 		fetchSensorValues: function(node) {
 			//hard coded for now
-			var from = parseInt(Date.now()/1000) - 60*60*48;
+			var from = parseInt(Date.now()/1000) - 60*60*24;
 			var to = parseInt(Date.now()/1000);
 			baseSensorValues.getList({node: node, from: from, to: to}).
 				then(function(sensorValues) {

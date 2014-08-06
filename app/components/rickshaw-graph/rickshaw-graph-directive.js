@@ -33,13 +33,13 @@ angular.module('rickshawGraph', []).directive('rickshawGraph', function($compile
 					});
 				});
 
-				var palette = new Rickshaw.Color.Palette()
+				var palette = new Rickshaw.Color.Palette();
 				var series = scope.sensors.map(function(sensor){
 					var data = (seriesData[sensor.id] === undefined) ? [] : seriesData[sensor.id];
 
 					//calculate the range
 					var range;
-					if (sensor.graphStart == null) {
+					if (sensor.graphStart === null) {
 						range = d3.extent(data, function(d){return d.y;});
 					} else {
 						range = [sensor.graphStart, d3.max(data, function(d){return d.y;})];
@@ -176,7 +176,7 @@ angular.module('rickshawGraph', []).directive('rickshawGraph', function($compile
 				series = getData();
 				settings = getSettings();
 
-				if (series.length == 0) return;
+				if (series.length === 0) return;
 
 				var wrap = angular.element(element);
 				wrap.empty();

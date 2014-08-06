@@ -42,4 +42,14 @@ class SensorModel extends WateringSystemModelAbstract
 	{
 		return $this->getRepository()->findOneBy(array('name' => $name));
 	}
+	
+	/**
+	 * Get all sensors by their node
+	 * @param int $node
+	 * @return Sensor[]
+	 */
+	public function getSensorByNode($node)
+	{
+		return $this->getRepository()->findBy(array('node' => $node, 'isEnabled' => true));
+	}
 }

@@ -1,15 +1,7 @@
-@sensor-readings-in-row : 4;
-.heading {
-	.make-row();
-	h1 {
-		margin: 0;
-	}
-	.menu {
-		.make-sm-column(12);
-	}
-}
 .sensorReadings {
-	&> div {
+	@sensor-readings-in-row : 4;
+	margin-bottom: @line-height-computed;
+	& > div {
 		.make-row();
 	}
 	.sensorReading {
@@ -17,16 +9,17 @@
 		.make-xs-column(6);
 	}
 }
+
 .sensorReading {
 	padding: @padding-base-vertical @padding-base-horizontal;
 	text-align: center;
-	&> div {
+	& > div {
 		min-height: @line-height-computed * 6;
 		border: 1px solid @legend-border-color;
 		border-radius: @border-radius-large;
 		padding: @padding-base-vertical @padding-base-horizontal;
 	}
-	.title{
+	.title {
 		font-size: @font-size-large;
 		font-weight: bold;
 	}

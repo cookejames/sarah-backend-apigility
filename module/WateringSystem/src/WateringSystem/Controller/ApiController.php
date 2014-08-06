@@ -16,16 +16,16 @@ class ApiController extends WateringSystemControllerAbstract
 	 * @throws \Exception
 	 * @return \Zend\View\Model\JsonModel
 	 */
-    public function fetchSensorValuesAction()
+    public function getSensorValuesAction()
     {
     	$request = $this->getRequest();
-    	if ($request->isPost() && $request->getPost('node', false)
-    			 && $request->getPost('from', false) && $request->getPost('to', false)) {
+    	if ($request->isGet() && $request->getQuery('node', false)
+    			 && $request->getQuery('from', false) && $request->getQuery('to', false)) {
     		try {
     			//get the maximum date
-    			$fromTimestamp = $request->getPost('from');
-    			$toTimestamp = $request->getPost('to');
-    			$nodeId = $request->getPost('node');
+    			$fromTimestamp = $request->getQuery('from');
+    			$toTimestamp = $request->getQuery('to');
+    			$nodeId = $request->getQuery('node');
     			
     			$to = \DateTime::createFromFormat('U', $toTimestamp);
     			$from = \DateTime::createFromFormat('U', $fromTimestamp);
@@ -39,12 +39,18 @@ class ApiController extends WateringSystemControllerAbstract
     			}
     			
     			$sensorValues = $this->getSensorValueModel()->getSensorValuesBetween($from, $to, $node, 'ASC');
-    			$helper = $this->getServiceLocator()->get('viewhelpermanager')->get('SensorToJson');
-    			return new JsonModel(array(
-    					'result'	=> $helper()->getGraphData($sensorValues, false),
-    					'from'		=> $fromTimestamp,
-    					'to'		=> $toTimestamp,
-    					'node'		=> $nodeId
+    			$array = array();
+    			foreach ($sensorValues as $sensorValue) {
+    				$array[] = array(
+    					'id'			=> $sensorValue->getId(),
+    					'sensor'		=> $sensorValue->getSensor()->getId(),
+    					'timestamp'		=> $sensorValue->getDate()->getTimestamp(),
+    					'value'			=> $sensorValue->getCalibratedValue(),
+    					'rawValue'		=> $sensorValue->getValue(),
+    					'isCalibrated'	=> true
+    				);
+    			}
+    			return new JsonModel(array('_embeded' => $array	
     			));
     		} catch (\Exception $e) {
     			return new JsonModel(array('result' => false, 'message' => $e->getMessage()));
@@ -76,5 +82,35 @@ class ApiController extends WateringSystemControllerAbstract
     			return new JsonModel(array('result' => false));
     		}
     	}
+    }
+    
+    public function getNodesAction()
+    {
+    	$nodes = $this->getNodeModel()->getNodes();
+    	$array = array();
+    	foreach ($nodes as $node) {
+    		$array[] = array(
+    			'id'		=> $node->getId(),
+    			'name'		=> $node->getName(),
+    			'isEnabled'	=> $node->getIsEnabled()
+    		);
+    	}
+    	return new JsonModel(array('_embeded' => $array
+    	));
+    }
+    
+    public function getSensorsAction()
+    {
+//     	$request = $this->getRequest();
+//     	if ($request->isPost() && $request->getPost('node', false)) {
+    		$sensors = $this->getSensorModel()->getSensors();
+    		$array = array();
+    		foreach ($sensors as $sensor) {
+    			$array[] = $sensor->toArray();
+    		}
+    		return new JsonModel(array('_embeded' => $array
+    		));
+//     	}
+    			
     }
 }

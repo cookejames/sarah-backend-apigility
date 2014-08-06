@@ -1,22 +1,58 @@
-<?php 	$this->headscript()->appendFile($this->basePath() . '/js/index/index.js');?>
-<div class="heading">
-	<div class="menu">
-		<ul class="nav nav-tabs">
-			<?php foreach ($this->nodes as $node) : ?>
-				<li <?php if ($this->counter()->isFirst('tab')) echo 'class="active"'; ?>><a href="#node<?php echo $node->getId()?>" data-toggle="tab"><?php echo $this->escapehtml($node->getName())?></a></li>
-			<?php endforeach; ?>
-		</ul>
+<div ng-controller="nodeController as nodeController">
+	<div class="heading">
+		<div class="menu">
+			<ul class="nav nav-tabs">
+				<li ng-repeat="node in nodeController.nodes" ng-class="{active: nodeController.isActive(node.id)}">
+					<a ng-click="nodeController.setActive(node.id)">{{node.name}}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="tab-content">
+		<div ng-repeat="node in nodeController.nodes" ng-controller="sensorReadingController as sensor"
+		 class="tab-pane" ng-class="{active: nodeController.isActive(node.id)}" >
+			<div class="sensorReadings">
+				<div ng-repeat="row in sensor.sensors | filter : {node: node.id, isEnabled: true} | partition:4">
+					<div class="clearfix visible-xs"></div>
+					<div class="sensorReading" ng-repeat="sensorReading in row">
+						<div>
+							<div class="title">
+								{{sensorReading.description}}
+							</div>
+							<div ng-switch="sensor.latestValue(sensorReading.id)">
+								<div class="value" ng-switch-default>
+									{{sensor.latestValue(sensorReading.id)}}{{sensorReading.units}}
+								</div>
+								<div class="value" ng-switch-when="false">--</div>
+							</div>
+							<div class="time">
+								<small fuzzy-time timestamp="sensor.latestTimestamp(sensorReading.id)"></small>
+							</div>
+							<div class="progress progress-striped" ng-show="sensorReading.isRanged">
+								<div class="progress-bar progress-bar-info"
+									 style="width: {{sensor.percentage(sensorReading)}}%"
+									 ng-show="sensor.latestValue(sensorReading.id)">
+								 </div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<rickshaw-graph
+				rickshaw-sensors="sensor.sensors"
+				rickshaw-sensor-values="sensor.sensorValues">
+			</rickshaw-graph>
+			<!--<div class="sensorGraph">
+				<div class="chartLoader"></div>
+				<div class="chartContainer">
+					<div class="yAxis"></div>
+					<div class="chart rickshaw_graph"></div>
+					<div class="slider"></div>
+					<div class="legend rickshaw_legend">
+						<div class="fetchResults"><small>&lt; get earlier results</small></div>
+					</div>
+				</div>
+			</div>-->
+		</div>
 	</div>
 </div>
-<div class="tab-content">
-	<?php foreach ($this->nodes as $node) : ?>
-		<div id="node<?php echo $node->getId(); ?>" class="tab-pane<?php if ($this->counter()->isFirst('tabContent')) echo ' active'; ?>">
-			<?php if (($sensors = $node->getSensors()) == true) : ?>
-				<?php echo $this->partial('watering-system/partials/nodetab.phtml', array('node' => $node, 'sensors' => $sensors, 'columns' => 4, 'container' => '#node' . $node->getId())); ?>
-			<?php else : ?>
-				<p>No sensors found</p>
-			<?php endif;?>
-		</div>
-	<?php endforeach; ?>
-</div>
-<!-- <div class="text-center"><span id="pumpOn" class="btn btn-primary">Turn Pump On Manually</span></div> -->

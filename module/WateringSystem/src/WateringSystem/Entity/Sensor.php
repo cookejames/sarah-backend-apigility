@@ -324,11 +324,11 @@ class Sensor implements WateringSystemEntityInterface
 	public function toArray()
 	{
 		$array = get_object_vars($this);
-		unset($array['node']);
 		$keys = preg_grep('/^__(.)+__$/', array_keys($array));
 		foreach ($keys as $key) {
 			unset($array[$key]);
 		}
+		$array['node'] = $this->getNode()->getId();
 		return $array;
 	}
 }

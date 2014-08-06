@@ -1,8 +1,7 @@
-'use strict';
-
 angular.module('sensorReading').controller('sensorReadingController',
 ['$scope', 'sensorReadingService',
 	function ($scope, sensorReadingService) {
+		'use strict';
 		var sensorReadingController = this;
 
 		this.sensors = sensorReadingService.sensors;
@@ -26,8 +25,8 @@ angular.module('sensorReading').controller('sensorReadingController',
 		};
 
 		this.percentage = function(sensorReading) {
-			return sensorReadingController.latestValue(sensorReading.id)
-				/ (sensorReading.rangeMax - sensorReading.rangeMin) * 100;
+			return sensorReadingController.latestValue(sensorReading.id) /
+				(sensorReading.rangeMax - sensorReading.rangeMin) * 100;
 		};
 	}
 ]);

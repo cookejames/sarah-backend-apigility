@@ -1,6 +1,5 @@
-'use strict';
-
 angular.module('sarahApp.filters').filter('partition', function($cacheFactory) {
+	'use strict';
 	var arrayCache = $cacheFactory('partition');
 	var filter = function(arr, size) {
 		if (!arr) { return; }

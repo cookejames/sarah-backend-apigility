@@ -1,6 +1,5 @@
-'use strict';
-
 angular.module('sarahApp.directives').directive('fuzzyTime', function() {
+	'use strict';
 	return {
 		restrict: 'AE',
 		scope: {

@@ -1,14 +1,12 @@
-'use strict';
-
 angular.module('sensorReading').service('sensorReadingService',
 ['$rootScope', 'Restangular', 'orderByFilter', 'limitToFilter', 'filterFilter',
 function ($rootScope, Restangular, orderByFilter, limitToFilter, filterFilter) {
+	'use strict';
 	var sensorReadingService = this;
 	var baseNodes = Restangular.all('getnodes');
 	var baseSensors = Restangular.all('getsensors');
 	var baseSensorValues = Restangular.all('getsensorvalues');
 	var latestValues = {};
-
 	/**
 	 * Parse the sensorValues to find the latest for each sensor and store in latestValues
 	 */
@@ -26,6 +24,7 @@ function ($rootScope, Restangular, orderByFilter, limitToFilter, filterFilter) {
 		sensors: [],
 		sensorValues: [],
 
+
 		fetchNodes: function() {
 			baseNodes.getList().
 				then(function(nodes) {
@@ -38,13 +37,14 @@ function ($rootScope, Restangular, orderByFilter, limitToFilter, filterFilter) {
 			baseSensors.getList().
 				then(function(sensors) {
 					service.sensors = sensors;
+					getLatestValues(service.sensors, service.sensorValues);
 					$rootScope.$broadcast('sensorReadingService.sensors.update', sensors);
 				});
 		},
 
 		fetchSensorValues: function(node) {
 			//hard coded for now
-			var from = parseInt(Date.now()/1000) - 60*60*24;
+			var from = parseInt(Date.now()/1000) - 60*60*48;
 			var to = parseInt(Date.now()/1000);
 			baseSensorValues.getList({node: node, from: from, to: to}).
 				then(function(sensorValues) {
@@ -69,7 +69,7 @@ function ($rootScope, Restangular, orderByFilter, limitToFilter, filterFilter) {
 		 * @returns {*}
 		 */
 		latestValue: function(sensorId) {
-			if (latestValues[sensorId] == undefined) {
+			if (latestValues[sensorId] === undefined) {
 				return false;
 			}
 			return latestValues[sensorId].value;
@@ -81,7 +81,7 @@ function ($rootScope, Restangular, orderByFilter, limitToFilter, filterFilter) {
 		 * @returns {*}
 		 */
 		latestTimestamp: function(sensorId) {
-			if (latestValues[sensorId] == undefined) {
+			if (latestValues[sensorId] === undefined) {
 				return false;
 			}
 			return latestValues[sensorId].timestamp;

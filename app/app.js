@@ -1,3 +1,4 @@
+(function(){
 'use strict';
 
 angular.module('sarahApp', [
@@ -32,3 +33,4 @@ angular
 			return extractedData;
 		});
 	}]);
+})()

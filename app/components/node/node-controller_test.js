@@ -1,5 +1,3 @@
-'use strict';
-
 describe('Controller: nodeController', function(){
 	var controller, scope;
 

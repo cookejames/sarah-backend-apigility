@@ -1,8 +1,7 @@
-'use strict';
-
 angular.module('sarahApp.node').controller('nodeController',
 ['$scope', 'sensorReadingService', '$interval',
 function ($scope, sensorReadingService, $interval) {
+	'use strict';
 	var nodeController = this;
 
 	var updateInterval = 60 * 1000; //how often to fetch the sensor values for the active node - every minute
@@ -15,14 +14,14 @@ function ($scope, sensorReadingService, $interval) {
 		nodeController.nodes = nodes;
 
 		//setup the active node
-		if (nodes.length > 0 && activeNode == null) {
+		if (nodes.length > 0 && activeNode === null) {
 			nodeController.setActive(nodes[0].id);
 		}
 	});
 
 	//Update the active node regularly
 	var interval = $interval(function(){
-		if (activeNode != null) {
+		if (activeNode !== null) {
 			sensorReadingService.fetchSensorValues(activeNode);
 		}
 	}, updateInterval);

@@ -17,7 +17,9 @@ angular.module('sarahApp.directives').directive('fuzzyTime', function() {
 				var minutes = parseInt(seconds / 60);
 				var hours = parseInt(minutes / 60);
 
-				if (seconds < 60) {
+				if (phpTimestamp === false) {
+					return '--';
+				} else if (seconds < 60) {
 					return 'less than a minute';
 				} else if (seconds == 60) {
 					return 'a minute ago';

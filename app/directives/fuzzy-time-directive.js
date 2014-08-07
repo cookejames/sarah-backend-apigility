@@ -33,7 +33,18 @@ angular.module('sarahApp.directives').directive('fuzzyTime', function() {
 					return 'over a day ago';
 				}
 			};
-			element.text(formatTime(scope.timestamp));
+
+			function display() {
+				element.text(formatTime(scope.timestamp));
+			}
+
+			scope.$watch('timestamp', function(newValue, oldValue) {
+				if (!angular.equals(newValue, oldValue)) {
+					display();
+				}
+			});
+
+			display();
 		}
 	};
 });

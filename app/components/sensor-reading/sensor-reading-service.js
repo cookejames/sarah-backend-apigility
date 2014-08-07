@@ -48,9 +48,9 @@ function ($rootScope, Restangular, orderByFilter, limitToFilter, filterFilter) {
 			var to = parseInt(Date.now()/1000);
 			baseSensorValues.getList({node: node, from: from, to: to}).
 				then(function(sensorValues) {
-					service.sensorValues = sensorValues;
+					service.sensorValues = orderByFilter(_.union(service.sensorValues, sensorValues), '+timestamp');
 					getLatestValues(service.sensors, service.sensorValues);
-					$rootScope.$broadcast('sensorReadingService.sensorValues.update', sensorValues);
+					$rootScope.$broadcast('sensorReadingService.sensorValues.update', service.sensorValues);
 				});
 		},
 

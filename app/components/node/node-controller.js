@@ -8,6 +8,7 @@ function ($scope, sensorReadingService, $interval) {
 	var activeNode = null;
 	this.nodes = sensorReadingService.nodes;
 	sensorReadingService.fetchNodes();
+	this.activeSensors = [];
 
 	//When the nodes are updated we will likewise update our own copy of the nodes
 	$scope.$on('sensorReadingService.nodes.update', function(event, nodes){
@@ -17,6 +18,11 @@ function ($scope, sensorReadingService, $interval) {
 		if (nodes.length > 0 && activeNode === null) {
 			nodeController.setActive(nodes[0].id);
 		}
+	});
+
+	//When the sensors are updated update our record of the active sensors must be updated
+	$scope.$on('sensorReadingService.sensors.update', function(){
+		nodeController.activeSensors = sensorReadingService.sensorsByNode(activeNode);
 	});
 
 	//Update the active node regularly
@@ -45,5 +51,6 @@ function ($scope, sensorReadingService, $interval) {
 	this.setActive = function(node) {
 		activeNode = node;
 		sensorReadingService.fetchSensorValues(node);
+		nodeController.activeSensors = sensorReadingService.sensorsByNode(activeNode);
 	};
 }]);

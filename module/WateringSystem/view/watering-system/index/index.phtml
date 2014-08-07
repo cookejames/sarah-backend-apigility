@@ -12,7 +12,7 @@
 		<div ng-repeat="node in nodeController.nodes" ng-controller="sensorReadingController as sensor"
 		 class="tab-pane" ng-class="{active: nodeController.isActive(node.id)}" >
 			<div class="sensorReadings">
-				<div ng-repeat="row in sensor.sensors | filter : {node: node.id, isEnabled: true} | partition:4">
+				<div ng-repeat="row in nodeController.activeSensors | partition:4">
 					<div class="clearfix visible-xs"></div>
 					<div class="sensorReading" ng-repeat="sensorReading in row">
 						<div>
@@ -39,20 +39,9 @@
 				</div>
 			</div>
 			<rickshaw-graph class="sensorGraph"
-				rickshaw-sensors="sensor.sensors"
+				rickshaw-sensors="nodeController.activeSensors"
 				rickshaw-sensor-values="sensor.sensorValues">
 			</rickshaw-graph>
-			<!--<div class="sensorGraph">
-				<div class="chartLoader"></div>
-				<div class="chartContainer">
-					<div class="yAxis"></div>
-					<div class="chart rickshaw_graph"></div>
-					<div class="slider"></div>
-					<div class="legend rickshaw_legend">
-						<div class="fetchResults"><small>&lt; get earlier results</small></div>
-					</div>
-				</div>
-			</div>-->
 		</div>
 	</div>
 </div>

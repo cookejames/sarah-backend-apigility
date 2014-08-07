@@ -108,7 +108,6 @@ angular.module('rickshawGraph', []).directive('rickshawGraph', function($compile
 					pixelsPerTick:	settings.pixelsPerTick, //how often to display ticks
 					grid:			false
 				} );
-				setAxisStyleBySeries(axis, graph.series[0]);
 				return axis;
 			}
 

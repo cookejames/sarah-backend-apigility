@@ -1,32 +1,61 @@
-angular.module('sensorReading').controller('sensorReadingController',
-['$scope', 'sensorReadingService',
-	function ($scope, sensorReadingService) {
-		'use strict';
-		var sensorReadingController = this;
+angular.module('sensorReading').controller('sensorReadingController', ['$scope', '$interval', 'sensorReadingService',
+function ($scope, $interval, sensorReadingService) {
+	'use strict';
+	var nodeController = this;
 
-		this.sensors = sensorReadingService.sensors;
-		this.sensorValues = sensorReadingService.sensorValues;
-		sensorReadingService.fetchSensors();
+	var updateInterval = 60 * 1000; //how often to fetch the sensor values for the active node - every minute
+	var activeNode = null;
+	//get a reference to the nodes object
+	$scope.nodes = sensorReadingService.getNodes();
 
-		//When the sensors are updated we will likewise update our own copy of the sensors
-		$scope.$on('sensorReadingService.sensors.update', function(event, sensors){
-			sensorReadingController.sensors = sensors;
-		});
-		$scope.$on('sensorReadingService.sensorValues.update', function(event, sensorValues){
-			sensorReadingController.sensorValues = sensorValues;
-		});
+	//fetch nodes from the server then fetch the sensors
+	sensorReadingService.updateNodes().then(function(nodes){
+		//get the first node and set it as active
+		for (var node in nodes) {
+			nodeController.setActive(node);
+			break;
+		}
+		return sensorReadingService.updateSensors();
+	});
 
-		this.latestValue = function(sensorId) {
-			return sensorReadingService.latestValue(sensorId);
-		};
+	/**
+	 * Get the latest value of a sensor as a percentage of its range
+	 * @param sensor
+	 * @returns {number}
+	 */
+	this.percentageValue = function(sensor) {
+		if (sensor.latest !== undefined) {
+			return sensor.latest.value / (sensor.rangeMax - sensor.rangeMin) * 100;
+		}
 
-		this.latestTimestamp = function(sensorId) {
-			return sensorReadingService.latestTimestamp(sensorId);
-		};
+		return 0;
+	};
 
-		this.percentage = function(sensorReading) {
-			return sensorReadingController.latestValue(sensorReading.id) /
-				(sensorReading.rangeMax - sensorReading.rangeMin) * 100;
-		};
-	}
-]);
+	//Update the active node regularly
+	var interval = $interval(function(){
+		if (activeNode !== null) {
+			sensorReadingService.updateSensorValues(activeNode);
+		}
+	}, updateInterval);
+	$scope.$on('$destroy', function() {
+		$interval.cancel(interval);
+	});
+
+	/**
+	 * Is this node active
+	 * @param node
+	 * @returns {boolean}
+	 */
+	this.isActive = function(node) {
+		return node == activeNode;
+	};
+
+	/**
+	 * Set this as the active node
+	 * @param node
+	 */
+	this.setActive = function(node) {
+		activeNode = node;
+		sensorReadingService.updateSensorValues(node);
+	};
+}]);

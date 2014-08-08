@@ -4,9 +4,18 @@ angular.module('sarahApp.filters').filter('partition', function($cacheFactory) {
 	var filter = function(arr, size) {
 		if (!arr) { return; }
 		var newArr = [];
-		for (var i=0; i<arr.length; i+=size) {
-			newArr.push(arr.slice(i, i+size));
-		}
+		var arrNo = -1;
+		var index = 0;
+		//done for compatibility with both arrays and object properties
+		angular.forEach(arr, function(member){
+			if (index % size === 0) {
+				arrNo++;
+				newArr.push([]);
+			}
+			newArr[arrNo].push(member);
+			index++;
+		});
+
 		var cachedParts;
 		var arrString = JSON.stringify(arr);
 		cachedParts = arrayCache.get(arrString+size);

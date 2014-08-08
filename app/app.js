@@ -2,7 +2,6 @@
 'use strict';
 
 angular.module('sarahApp', [
-	'sarahApp.node',
 	'sensorReading',
 	'sarahApp.filters',
 	'sarahApp.directives',
@@ -13,7 +12,6 @@ angular.module('sarahApp', [
 }]);
 angular.module('sarahApp.filters', []);
 angular.module('sarahApp.directives', []);
-angular.module('sarahApp.node', ['sensorReading']);
 angular
 	.module('sensorReading', ['restangular'])
 	.config(['RestangularProvider', function(RestangularProvider){

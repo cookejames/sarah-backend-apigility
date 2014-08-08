@@ -1,47 +1,43 @@
-<div ng-controller="nodeController as nodeController">
+<div ng-controller="sensorReadingController as sensorReadingController">
 	<div class="heading">
 		<div class="menu">
 			<ul class="nav nav-tabs">
-				<li ng-repeat="node in nodeController.nodes" ng-class="{active: nodeController.isActive(node.id)}">
-					<a ng-click="nodeController.setActive(node.id)">{{node.name}}</a>
+				<li ng-repeat="node in nodes" ng-class="{active: sensorReadingController.isActive(node.id)}">
+					<a ng-click="sensorReadingController.setActive(node.id)">{{node.name}}</a>
 				</li>
 			</ul>
 		</div>
 	</div>
 	<div class="tab-content">
-		<div ng-repeat="node in nodeController.nodes" ng-controller="sensorReadingController as sensor"
-		 class="tab-pane" ng-class="{active: nodeController.isActive(node.id)}" >
+		<div ng-repeat="node in nodes" class="tab-pane" ng-class="{active: sensorReadingController.isActive(node.id)}" >
 			<div class="sensorReadings">
-				<div ng-repeat="row in nodeController.activeSensors | partition:4">
+				<div ng-repeat="row in node.sensors | partition:4">
 					<div class="clearfix visible-xs"></div>
-					<div class="sensorReading" ng-repeat="sensorReading in row">
+					<div class="sensorReading" ng-repeat="sensor in row">
 						<div>
 							<div class="title">
-								{{sensorReading.description}}
+								{{sensor.description}}
 							</div>
-							<div ng-switch="sensor.latestValue(sensorReading.id)">
+							<div ng-switch="sensor.latest">
 								<div class="value" ng-switch-default>
-									{{sensor.latestValue(sensorReading.id)}}{{sensorReading.units}}
+									{{sensor.latest.value}}{{sensor.units}}
 								</div>
 								<div class="value" ng-switch-when="false">--</div>
 							</div>
 							<div class="time">
-								<small fuzzy-time timestamp="sensor.latestTimestamp(sensorReading.id)"></small>
+								<small fuzzy-time timestamp="sensor.latest.timestamp"></small>
 							</div>
-							<div class="progress progress-striped" ng-show="sensorReading.isRanged">
+							<div class="progress progress-striped" ng-show="sensor.isRanged">
 								<div class="progress-bar progress-bar-info"
-									 style="width: {{sensor.percentage(sensorReading)}}%"
-									 ng-show="sensor.latestValue(sensorReading.id)">
+									 ng-style="{'width': sensorReadingController.percentageValue(sensor) + '%'}"
+									 ng-show="sensor.latest">
 								 </div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<rickshaw-graph class="sensorGraph"
-				rickshaw-sensors="nodeController.activeSensors"
-				rickshaw-sensor-values="sensor.sensorValues">
-			</rickshaw-graph>
+			<rickshaw-graph class="sensorGraph" rickshaw-sensors="node.sensors"></rickshaw-graph>
 		</div>
 	</div>
 </div>

@@ -4,7 +4,6 @@ angular.module('rickshawGraph', []).directive('rickshawGraph', function($compile
 		restrict: 'AE',
 		scope: {
 			sensors : '=rickshawSensors',
-			sensorValues: '=rickshawSensorValues',
 			config: '=rickshawConfig'
 		},
 		link: function(scope, element, attrs) {
@@ -21,21 +20,16 @@ angular.module('rickshawGraph', []).directive('rickshawGraph', function($compile
 			}
 
 			function getData() {
-				//split the sensor values into series
-				var seriesData = {};
-				angular.forEach(scope.sensorValues, function(value){
-					if (seriesData[value.sensor] === undefined) {
-						seriesData[value.sensor] = [];
-					}
-					seriesData[value.sensor].push({
-						x: value.timestamp,
-						y: value.value
-					});
-				});
-
 				var palette = new Rickshaw.Color.Palette();
-				var series = scope.sensors.map(function(sensor){
-					var data = (seriesData[sensor.id] === undefined) ? [] : seriesData[sensor.id];
+				var series = [];
+				angular.forEach(scope.sensors, function(sensor){
+					var data = [];
+					angular.forEach(sensor.values, function(value){
+						data.push({
+							x: value.timestamp,
+							y: value.value
+						});
+					});
 
 					//calculate the range
 					var range;
@@ -45,7 +39,7 @@ angular.module('rickshawGraph', []).directive('rickshawGraph', function($compile
 						range = [sensor.graphStart, d3.max(data, function(d){return d.y;})];
 					}
 
-					return {
+					series.push({
 						name: sensor.description,
 						data: data,
 						scale: d3.scale.linear().domain(range),
@@ -54,7 +48,7 @@ angular.module('rickshawGraph', []).directive('rickshawGraph', function($compile
 						node: sensor.node,
 						units: sensor.units,
 						valueType: sensor.valueType
-					};
+					});
 				});
 
 				return series;
@@ -199,9 +193,10 @@ angular.module('rickshawGraph', []).directive('rickshawGraph', function($compile
 				});
 
 				//create the graph smoother
-				new Rickshaw.Graph.Smoother( {
+				var smoother = new Rickshaw.Graph.Smoother( {
 					graph: graph
-				}).setScale(settings.smooth);
+				});
+				smoother.setScale(settings.smooth);
 				graph.render();
 
 				yAxis = createYAxis(yAxisElement[0]);
@@ -211,16 +206,11 @@ angular.module('rickshawGraph', []).directive('rickshawGraph', function($compile
 				makeResponsive();
 			}
 
-			scope.$watch('sensorValues', function(newValue, oldValue) {
-				if (!angular.equals(newValue, oldValue)) {
-					update();
-				}
-			});
 			scope.$watch('sensors', function(newValue, oldValue) {
 				if (!angular.equals(newValue, oldValue)) {
 					update();
 				}
-			});
+			}, true);
 
 			update();
 		}

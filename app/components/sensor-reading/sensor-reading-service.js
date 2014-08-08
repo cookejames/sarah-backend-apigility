@@ -1,90 +1,90 @@
-angular.module('sensorReading').service('sensorReadingService',
-['$rootScope', 'Restangular', 'orderByFilter', 'limitToFilter', 'filterFilter',
-function ($rootScope, Restangular, orderByFilter, limitToFilter, filterFilter) {
+angular.module('sensorReading').service('sensorReadingService', ['$q', 'Restangular', function ($q, Restangular) {
 	'use strict';
 	var sensorReadingService = this;
 	var baseNodes = Restangular.all('getnodes');
 	var baseSensors = Restangular.all('getsensors');
 	var baseSensorValues = Restangular.all('getsensorvalues');
-	var latestValues = {};
-	/**
-	 * Parse the sensorValues to find the latest for each sensor and store in latestValues
-	 */
-	var getLatestValues = function(sensors, sensorValues) {
-		angular.forEach(sensors, function(sensor){
-			var latest = limitToFilter(orderByFilter(filterFilter(sensorValues, {sensor: sensor.id}, true), '-timestamp'), 1);
-			if (latest.length == 1) {
-				latestValues[sensor.id] = latest[0];
-			}
-		});
-	};
+
+	var nodes = {};
 
 	var service = {
-		nodes: [],
-		sensors: [],
-		sensorValues: [],
-
-
-		fetchNodes: function() {
-			baseNodes.getList().
-				then(function(nodes) {
-					service.nodes = nodes;
-					$rootScope.$broadcast('sensorReadingService.nodes.update', nodes);
-				});
+		/**
+		 * Get our nodes
+		 * @returns {{}}
+		 */
+		getNodes: function() {
+			return nodes;
 		},
 
-		fetchSensors: function() {
-			baseSensors.getList().
-				then(function(sensors) {
-					service.sensors = sensors;
-					getLatestValues(service.sensors, service.sensorValues);
-					$rootScope.$broadcast('sensorReadingService.sensors.update', sensors);
+		/**
+		 * Update the available nodes from the server
+		 * @returns {*}
+		 */
+		updateNodes: function() {
+			var deferred = $q.defer();
+
+			baseNodes.getList().then(function(fetchedNodes) {
+				angular.forEach(fetchedNodes, function(node){
+					if (nodes[node.id] === undefined) {
+						nodes[node.id] = node.plain();
+						//add a sensors object
+						nodes[node.id].sensors = {};
+					}
 				});
+
+				deferred.resolve(nodes);
+			});
+
+			return deferred.promise;
 		},
 
-		fetchSensorValues: function(node) {
+		/**
+		 * Update the available sensors from the server
+		 * @returns {*}
+		 */
+		updateSensors: function() {
+			var deferred = $q.defer();
+
+			baseSensors.getList().then(function(sensors) {
+				angular.forEach(sensors, function(sensor){
+					if (nodes[sensor.node] !== undefined && nodes[sensor.node].sensors[sensor.id] === undefined) {
+						nodes[sensor.node].sensors[sensor.id] = sensor.plain();
+						nodes[sensor.node].sensors[sensor.id].values = {};
+					}
+				});
+				deferred.resolve(nodes);
+			});
+
+			return deferred.promise;
+		},
+
+		/**
+		 * Update the sensor values from the server
+		 * @param node the node to get the values for
+		 * @returns {*}
+		 */
+		updateSensorValues: function(node) {
+			var deferred = $q.defer();
+
 			//hard coded for now
 			var from = parseInt(Date.now()/1000) - 60*60*24;
 			var to = parseInt(Date.now()/1000);
 			baseSensorValues.getList({node: node, from: from, to: to}).
 				then(function(sensorValues) {
-					service.sensorValues = orderByFilter(_.union(service.sensorValues, sensorValues), '+timestamp');
-					getLatestValues(service.sensors, service.sensorValues);
-					$rootScope.$broadcast('sensorReadingService.sensorValues.update', service.sensorValues);
+					var sensorMap = {};
+					var length = sensorValues.length;
+					for (var i = 0; i < length; i++) {
+						var sensorValue = sensorValues[i];
+						if (nodes[node].sensors[sensorValue.sensor] !== undefined) {
+							nodes[node].sensors[sensorValue.sensor].values[sensorValue.id] = sensorValue.plain();
+							nodes[node].sensors[sensorValue.sensor].latest = sensorValue.plain();
+						}
+
+						deferred.resolve(nodes);
+					}
 				});
-		},
 
-		/**
-		 * Get the sensors in a node
-		 * @param node
-		 * @returns {*}
-		 */
-		sensorsByNode: function(node) {
-			return filterFilter(service.sensors, {node: node});
-		},
-
-		/**
-		 * Get the latest value for this sensor
-		 * @param sensorId
-		 * @returns {*}
-		 */
-		latestValue: function(sensorId) {
-			if (latestValues[sensorId] === undefined) {
-				return false;
-			}
-			return latestValues[sensorId].value;
-		},
-
-		/**
-		 * Get the latest timestamp for this sensor
-		 * @param sensorId
-		 * @returns {*}
-		 */
-		latestTimestamp: function(sensorId) {
-			if (latestValues[sensorId] === undefined) {
-				return false;
-			}
-			return latestValues[sensorId].timestamp;
+			return deferred.promise;
 		}
 	};
 

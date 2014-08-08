@@ -1,4 +1,7 @@
 module.exports = {
+	options: {
+		keepSpecialComments: 0
+	},
     combine: {
         files: {
             'public/css/app.css': [

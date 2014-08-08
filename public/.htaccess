@@ -23,3 +23,5 @@ RewriteRule ^(.*)$ %{ENV:BASE}index.php [NC,L]
 		ExpiresDefault "access plus 6 month"
 	</FilesMatch>
 </IfModule>
+
+SetOutputFilter DEFLATE

@@ -1,0 +1,55 @@
+<?php
+
+namespace sarah\Model;
+
+use sarah\Model\WateringSystemModelAbstract;
+use sarah\Entity\Sensor;
+
+/**
+ * Get details about sensors
+ * @author James Cooke
+ *
+ */
+class SensorModel extends WateringSystemModelAbstract 
+{
+	protected $repository = 'sarah\Entity\Sensor';
+	
+	/**
+	 * Get all sensors
+	 * @return Sensor[]
+	 */
+	public function getSensors()
+	{
+		return $this->getRepository()->findBy(array('isEnabled' => true), array('description' => 'asc'));
+	}
+	
+	/**
+	 * Get a sensor by its id
+	 * @param int $id
+	 * @return Sensor
+	 */
+	public function getSensorById($id)
+	{
+		return $this->getRepository()->find($id);
+	}
+	
+	/**
+	 * Get a sensor by its name
+	 * @param String $name
+	 * @return Sensor
+	 */
+	public function getSensorByName($name)
+	{
+		return $this->getRepository()->findOneBy(array('name' => $name));
+	}
+	
+	/**
+	 * Get all sensors by their node
+	 * @param int $node
+	 * @return Sensor[]
+	 */
+	public function getSensorByNode($node)
+	{
+		return $this->getRepository()->findBy(array('node' => $node, 'isEnabled' => true));
+	}
+}

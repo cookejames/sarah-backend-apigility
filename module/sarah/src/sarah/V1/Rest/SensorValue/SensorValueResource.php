@@ -8,6 +8,7 @@ use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrinePaginator;
 use sarah\Paginator\DoctrineHydratingArrayAdapter;
 use sarah\Rest\SarahAbstractResourceListener;
 use Doctrine\ORM\Query;
+use Zend\Stdlib\Hydrator\HydratorInterface;
 
 class SensorValueResource extends SarahAbstractResourceListener
 {

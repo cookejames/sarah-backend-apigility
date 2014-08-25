@@ -6,6 +6,7 @@ use ZF\Rest\AbstractResourceListener;
 use sarah\Model\NodeModel;
 use Zend\Paginator\Paginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrinePaginator;
+use Doctrine\ORM\Query;
 
 class NodeResource extends AbstractResourceListener
 {
@@ -71,6 +72,7 @@ class NodeResource extends AbstractResourceListener
      */
     public function fetchAll($params = array())
     {
+        $this->model->setHydrationMode(Query::HYDRATE_ARRAY);
     	$nodes = $this->model->getNodes();
     	return new Paginator(new DoctrinePaginator($nodes));
     }

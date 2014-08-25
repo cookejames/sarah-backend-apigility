@@ -1,10 +1,10 @@
-<phpunit bootstrap="PHPUnitBootstrap.php">
+<phpunit 
+    bootstrap="PHPUnitBootstrap.php"
+    colors="true"
+    >
     <testsuites>
-        <testsuite name="Controllers">
-            <directory>./WateringSystem/Controller</directory>
-        </testsuite>
         <testsuite name="Models">
-            <directory>./WateringSystem/Model</directory>
+            <directory>./sarah/Model</directory>
         </testsuite>
     </testsuites>
 </phpunit>

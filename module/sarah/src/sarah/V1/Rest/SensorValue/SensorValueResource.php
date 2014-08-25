@@ -2,10 +2,26 @@
 namespace sarah\V1\Rest\SensorValue;
 
 use ZF\ApiProblem\ApiProblem;
-use ZF\Rest\AbstractResourceListener;
+use sarah\Model\SensorValueModel;
+use Zend\Paginator\Paginator;
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrinePaginator;
+use sarah\Paginator\DoctrineHydratingArrayAdapter;
+use sarah\Rest\SarahAbstractResourceListener;
+use Doctrine\ORM\Query;
 
-class SensorValueResource extends AbstractResourceListener
+class SensorValueResource extends SarahAbstractResourceListener
 {
+	/**
+	 * @var SensorValueModel
+	 */
+	protected $model;
+	
+	public function __construct(SensorValueModel $model, HydratorInterface $hydrator = null, $prototype = null)
+	{
+		parent::__construct($model, $hydrator, $prototype);
+		$this->model->setHydrationMode(Query::HYDRATE_SCALAR);
+	}
+	
     /**
      * Create a resource
      *
@@ -14,7 +30,20 @@ class SensorValueResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        return new ApiProblem(405, 'The POST method has not been defined');
+    	unset($data->id);
+    	
+    	$doctrineEntity = $this->doctrineHydrator->hydrate(
+    			$this->hydrator->extract($data), 
+    			clone $this->doctrinePrototype
+		);
+    	
+    	try {
+    		$this->model->saveEntity($doctrineEntity);
+    	} catch (\Exception $e) {
+    		return new ApiProblem(400, 'Could not save data');
+    	}
+        
+    	return $this->fetch($doctrineEntity->getId());
     }
 
     /**
@@ -47,7 +76,8 @@ class SensorValueResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+    	$data = $this->model->getSensorValueById($id);
+    	return $this->hydrator->hydrate($data, clone $this->prototype);
     }
 
     /**
@@ -58,7 +88,23 @@ class SensorValueResource extends AbstractResourceListener
      */
     public function fetchAll($params = array())
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
+    	//Validate the parameters
+    	if (!is_numeric($params['from']) && !is_null($params['from'])) {
+    		return new ApiProblem(400, 'Parameter from is not an integer');
+    	}
+    	if (!is_numeric($params['to']) && !is_null($params['to'])) {
+    		return new ApiProblem(400, 'Parameter to is not an integer');
+    	}
+    	if (!is_array($params['sensors']) && !is_null($params['sensors'])) {
+    		return new ApiProblem(400, 'Parameter sensors is not an array');
+    	}
+    	
+    	$sensors = $params['sensors']; 
+    	$from = \DateTime::createFromFormat('U', $params['from']);
+    	$to = \DateTime::createFromFormat('U', $params['to']);
+    	
+    	$sensorValues = $this->model->getSensorValuesBetween($from, $to, $sensors);
+    	return new SensorValueCollection(new DoctrineHydratingArrayAdapter($sensorValues, $this->hydrator, $this->prototype));
     }
 
     /**

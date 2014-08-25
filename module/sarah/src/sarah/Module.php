@@ -20,6 +20,7 @@ use sarah\Model\WeatherModel;
 use Zend\ServiceManager\ServiceManager;
 use sarah\Model\WateringModel;
 use sarah\View\Helper\CounterHelper;
+use Zend\Uri\UriFactory;
 
 class Module implements ApigilityProviderInterface
 {
@@ -34,6 +35,16 @@ class Module implements ApigilityProviderInterface
 		//set the logger
 		$logger = $e->getApplication()->getServiceManager()->get('logger');
 		Logger::registerErrorHandler($logger);
+		
+		$this->registerUriScheme();
+	}
+	
+	/**
+	 * Register valid uri schemes
+	 */
+	protected function registerUriScheme()
+	{
+	    UriFactory::registerScheme('chrome-extension', 'Zend\Uri\Uri');
 	}
 	
 	/**
@@ -44,9 +55,9 @@ class Module implements ApigilityProviderInterface
 	protected function setInvokables(ServiceLocatorInterface $serviceLocator)
 	{
 		$serviceLocator
-		->setInvokableClass('SensorValueModel', 'sarah\Model\SensorValueModel')
-		->setInvokableClass('SensorModel', 'sarah\Model\SensorModel')
-		->setInvokableClass('NodeModel', 'sarah\Model\NodeModel');
+    		->setInvokableClass('SensorValueModel', 'sarah\Model\SensorValueModel')
+    		->setInvokableClass('SensorModel', 'sarah\Model\SensorModel')
+    		->setInvokableClass('NodeModel', 'sarah\Model\NodeModel');
 		return $this;
 	}
 	
@@ -73,36 +84,6 @@ class Module implements ApigilityProviderInterface
 				} else {
 					throw new \Exception('Could not find config item weather');
 				}
-			})
-			->setFactory('SensorReadingModel', function($serviceLocator){
-				$config = $serviceLocator->get('Config');
-				$sensor;
-				if (isset($config['sensor'])) {
-					$params = $config['sensor'];
-					if (isset($params['class'])) {
-						$class = $params['class'];
-						$sensor = new $class($params);
-					}
-				}
-				if (($sensor instanceof SensorAbstract) == false) {
-					throw new \Exception('Could not create a sensor from configuration');
-				}
-				return new SensorReadingModel($sensor);
-			})
-			->setFactory('PumpModel', function($serviceLocator){
-				$config = $serviceLocator->get('Config');
-				$sensor;
-				if (isset($config['sensor'])) {
-					$params = $config['sensor'];
-					if (isset($params['class'])) {
-						$class = $params['class'];
-						$sensor = new $class($params);
-					}
-				}
-				if (($sensor instanceof SensorAbstract) == false) {
-					throw new \Exception('Could not create a sensor from configuration');
-				}
-				return new PumpModel($sensor);
 			})
 			->setFactory('logger', function($serviceLocator){
 				$config = $serviceLocator->get('config');

@@ -2,11 +2,9 @@
 
 namespace sarah\Model;
 
-use sarah\Model\WateringSystemModelAbstract;
+use sarah\Model\SarahModelAbstract;
 use sarah\Entity\Node;
-use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrinePaginator;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
-use Zend\Paginator\Paginator as Paginator;
 use Doctrine\ORM\Query;
 
 /**
@@ -14,7 +12,7 @@ use Doctrine\ORM\Query;
  * @author James Cooke
  *
  */
-class NodeModel extends WateringSystemModelAbstract 
+class NodeModel extends SarahModelAbstract 
 {
 	protected $repository = 'sarah\Entity\Node';
 	
@@ -31,7 +29,7 @@ class NodeModel extends WateringSystemModelAbstract
 			->orderBy('node.id', 'asc');
 		
 		$query = $queryBuilder->getQuery();
-		$query->setHydrationMode(Query::HYDRATE_ARRAY);
+		$query->setHydrationMode($this->hydrationMode);
 		return new ORMPaginator($query, false);
 	}
 	
@@ -42,16 +40,13 @@ class NodeModel extends WateringSystemModelAbstract
 	 */
 	public function getNodeById($id)
 	{
-		return $this->getRepository()->find($id);
-	}
-	
-	/**
-	 * Get a node by its name
-	 * @param String $name
-	 * @return Node
-	 */
-	public function getNodeByName($name)
-	{
-		return $this->getRepository()->findOneBy(array('name' => $name));
+		$queryBuilder = $this->createQueryBuilder();
+		$queryBuilder->select('node')
+			->from($this->repository, 'node')
+			->andWhere($queryBuilder->expr()->eq('node.isEnabled', true))
+			->andWhere($queryBuilder->expr()->eq('node.id', ':node'))
+			->setParameters(array(':node' => $id));
+		
+		return $queryBuilder->getQuery()->getOneOrNullResult($this->hydrationMode);
 	}
 }

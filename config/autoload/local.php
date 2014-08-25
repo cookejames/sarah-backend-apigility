@@ -11,10 +11,16 @@ return array(
     ),
 	//weather details
 	'weather' => array(
-			'url' => 'http://api.openweathermap.org/data/2.5/',
-			'path' => 'weather?q=',
-			'default_location' => 'Cambridge,UK',
-			'api_id' => 'f361a96e9e3e42b0d4b4e8fbe4a855a8',
+		'url' => 'http://api.openweathermap.org/data/2.5/',
+		'path' => 'weather?q=',
+		'default_location' => 'Cambridge,UK',
+		'api_id' => 'f361a96e9e3e42b0d4b4e8fbe4a855a8',
+	    'sensors'  => array(
+	        'humidity'     => 11,
+	        'coudiness'    => 10,
+	        'pressure'     => 8,
+	        'temperature'  => 9
+	    ),
 	),
 	//doctrine config
 	'doctrine' => array(

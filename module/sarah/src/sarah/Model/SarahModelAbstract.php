@@ -9,17 +9,20 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use sarah\Entity\SarahEntityInterface;
+use Doctrine\ORM\Query;
 
 /**
  * Abstract class to carry out common model functions
  * @author James Cooke
  *
  */
-abstract class WateringSystemModelAbstract implements ServiceLocatorAwareInterface
+abstract class SarahModelAbstract implements ServiceLocatorAwareInterface
 {
 	protected $serviceLocator;
 	protected $entityManager;
 	protected $repository;
+	protected $hydrationMode = Query::HYDRATE_SCALAR;
 	
 	/**
 	 * (non-PHPdoc)
@@ -77,5 +80,37 @@ abstract class WateringSystemModelAbstract implements ServiceLocatorAwareInterfa
 	protected function createQueryBuilder()
 	{
 		return $this->getEntityManager()->createQueryBuilder();
+	}
+	
+	/**
+	 * Persist and flush an entity
+	 * @param SarahEntityInterface $entity
+	 * @return \sarah\Model\SarahModelAbstract
+	 */
+	public function saveEntity(SarahEntityInterface $entity)
+	{
+		$this->getEntityManager()->persist($entity);
+		$this->getEntityManager()->flush();
+		return $this;
+	}
+	
+	/**
+	 * Set the doctrine hydration mode for all queries
+	 * @param unknown $hydrationMode
+	 * @return \sarah\Model\SarahModelAbstract
+	 */
+	public function setHydrationMode($hydrationMode)
+	{
+		$this->hydrationMode = $hydrationMode;
+		return $this;
+	}
+	
+	/**
+	 * Get the hydration mode being used in all queries
+	 * @return Query::<constant>
+	 */
+	public function getHydrationMode()
+	{
+		return $this->hydrationMode;
 	}
 }

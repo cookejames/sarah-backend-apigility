@@ -3,9 +3,26 @@ namespace sarah\V1\Rest\Sensor;
 
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
+use sarah\Model\SensorModel;
+use Zend\Paginator\Paginator;
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrinePaginator;
+use sarah\Rest\SarahAbstractResourceListener;
+use Zend\Stdlib\Hydrator\HydratorInterface;
+use Doctrine\ORM\Query;
+use sarah\Paginator\DoctrineHydratingArrayAdapter;
 
-class SensorResource extends AbstractResourceListener
+class SensorResource extends SarahAbstractResourceListener
 {
+	/**
+	 * @var SensorModel
+	 */
+	protected $model;
+	
+	public function __construct(SensorModel $model, HydratorInterface $hydrator = null, $prototype = null)
+	{
+		parent::__construct($model, $hydrator, $prototype);
+		$this->model->setHydrationMode(Query::HYDRATE_SCALAR);
+	}
     /**
      * Create a resource
      *
@@ -47,7 +64,8 @@ class SensorResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        $obj = $this->model->getSensorById($id);
+        return $obj;
     }
 
     /**
@@ -58,7 +76,14 @@ class SensorResource extends AbstractResourceListener
      */
     public function fetchAll($params = array())
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
+    	if (!is_array($params['nodes']) && !is_null($params['nodes'])) {
+    		return new ApiProblem(400, 'Parameter nodes is not an array');
+    	}
+
+    	$nodes = $params['nodes'];
+
+    	$sensors = $this->model->getSensors();
+    	return new SensorCollection(new DoctrineHydratingArrayAdapter($sensors, $this->hydrator, $this->prototype));
     }
 
     /**

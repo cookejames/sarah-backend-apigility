@@ -1,4 +1,5 @@
 <?php
+use Doctrine\ORM\Query;
 /**
  * SensorModel test case.
  */
@@ -42,14 +43,31 @@ class SensorModelTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testGetSensors() 
 	{
+	    $this->sensorModel->setHydrationMode(Query::HYDRATE_ARRAY);
 		$sensors = $this->sensorModel->getSensors();
 		//check we are getting an array with more than 1 element
-		$this->assertTrue(is_array($sensors));
+		$this->assertInstanceOf('Doctrine\ORM\Tools\Pagination\Paginator', $sensors);
 		$this->assertGreaterThan(0, count($sensors));
 		
 		foreach ($sensors as $sensor) {
-			$this->assertInstanceOf('sarah\Entity\Sensor', $sensor);
+			$this->assertInternalType('array', $sensor);
 		}
+	}
+	
+	/**
+	 * Tests SensorModel->getSensors()
+	 */
+	public function testGetSensorsObjectHydrator()
+	{
+	    $this->sensorModel->setHydrationMode(Query::HYDRATE_OBJECT);
+	    $sensors = $this->sensorModel->getSensors();
+	    //check we are getting an array with more than 1 element
+	    $this->assertInstanceOf('Doctrine\ORM\Tools\Pagination\Paginator', $sensors);
+	    $this->assertGreaterThan(0, count($sensors));
+	
+	    foreach ($sensors as $sensor) {
+	        $this->assertInstanceOf('sarah\Entity\Sensor', $sensor);
+	    }
 	}
 	
 	/**
@@ -63,20 +81,6 @@ class SensorModelTest extends \PHPUnit_Framework_TestCase {
 		
 		//get invalid sensor
 		$sensor = $this->sensorModel->getSensorById(-1);
-		$this->assertNull($sensor);
-	}
-	
-	/**
-	 * Tests SensorModel->getSensorByName()
-	 */
-	public function testGetSensorByName() 
-	{
-		//get valid sensor
-		$sensor = $this->sensorModel->getSensorByName($this->validSensorName);
-		$this->assertInstanceOf('sarah\Entity\Sensor', $sensor);
-		
-		//get invalid sensor
-		$sensor = $this->sensorModel->getSensorByName('foo');
 		$this->assertNull($sensor);
 	}
 }

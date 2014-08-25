@@ -4,9 +4,7 @@ namespace sarah\V1\Rest\Node;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 use sarah\Model\NodeModel;
-use sarah\Paginator\Adapter\HydratingDoctrineAdapter;
 use Zend\Paginator\Paginator;
-use sarah\Stdlib\Hydrator\NodeHydrator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrinePaginator;
 
 class NodeResource extends AbstractResourceListener
@@ -62,7 +60,7 @@ class NodeResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        return $this->model->getNodeById($id);
     }
 
     /**

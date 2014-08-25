@@ -1,4 +1,5 @@
 <?php
+use Doctrine\ORM\Query;
 /**
  * NodeModel test case.
  */
@@ -33,17 +34,32 @@ class NodeModelTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tests NodeModel->getNodes()
 	 */
-	public function testGetNodes() 
+	public function testGetNodesArrayHydrator() 
 	{
+	    $this->nodeModel->setHydrationMode(Query::HYDRATE_ARRAY);
 		$nodes = $this->nodeModel->getNodes();
 		
-		$this->assertInternalType('array', $nodes);
+		$this->assertInstanceOf('Doctrine\ORM\Tools\Pagination\Paginator', $nodes);
 		
 		$this->assertGreaterThan(0, count($nodes));
 		
 		foreach ($nodes as $node) {
-			$this->assertInstanceOf('sarah\Entity\Node', $node);
+			$this->assertInternalType('array', $node);
 		}
+	}
+	
+	public function testGetNodesObjectHydrator()
+	{
+	    $this->nodeModel->setHydrationMode(Query::HYDRATE_OBJECT);
+	    $nodes = $this->nodeModel->getNodes();
+	
+	    $this->assertInstanceOf('Doctrine\ORM\Tools\Pagination\Paginator', $nodes);
+	
+	    $this->assertGreaterThan(0, count($nodes));
+	
+	    foreach ($nodes as $node) {
+	        $this->assertInstanceOf('sarah\Entity\Node', $node);
+	    }
 	}
 	
 	/**
@@ -58,16 +74,6 @@ class NodeModelTest extends \PHPUnit_Framework_TestCase {
 		
 		$node = $this->nodeModel->getNodeById('foo');
 		$this->assertNull($node); 
-	}
-	
-	/**
-	 * Tests NodeModel->getNodeByName()
-	 */
-	public function testGetNodeByName() {
-		// TODO Auto-generated NodeModelTest->testGetNodeByName()
-		$this->markTestIncomplete ( "getNodeByName test not implemented" );
-		
-		$this->nodeModel->getNodeByName(/* parameters */);
 	}
 }
 

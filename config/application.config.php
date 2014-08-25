@@ -24,6 +24,7 @@ return array(
         'ZF\\Versioning',
     	'DoctrineModule',
     	'DoctrineORMModule',
+    	'ZfrCors',
         'sarah'
     ),
     'module_listener_options' => array(

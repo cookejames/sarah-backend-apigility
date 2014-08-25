@@ -10,12 +10,13 @@ use sarah\Entity\SensorValue;
  * @author James Cooke
  *
  */
-class WeatherModel extends WateringSystemModelAbstract 
+class WeatherModel extends SarahModelAbstract 
 {
 	protected $url;
 	protected $path;
 	protected $default_location;
 	protected $apiId;
+	protected $sensorIds;
 	
 	public function __construct(array $config)
 	{
@@ -23,10 +24,11 @@ class WeatherModel extends WateringSystemModelAbstract
 			throw new \Exception('Missing required config option');
 		}
 		
-		$this->url				= $config['url'];
-		$this->path				= $config['path'];
-		$this->default_location	= $config['default_location'];
-		$this->apiId = (empty($config['api_id'])) ? null : $config['api_id']; 
+		$this->url                = $config['url'];
+		$this->path               = $config['path'];
+		$this->default_location   = $config['default_location'];
+		$this->apiId              = (empty($config['api_id'])) ? null : $config['api_id'];
+		$this->sensorIds          = (is_array($config['sensors'])) ? $config['sensors'] : array();
 	}
 	
 	/**
@@ -79,11 +81,11 @@ class WeatherModel extends WateringSystemModelAbstract
 	 */
 	protected function getApiPressure(\stdClass $object)
 	{
-		if (!isset($object->main) || !isset($object->main->pressure)) {
+		if (!isset($object->main) || !isset($object->main->pressure) || !isset($this->sensorIds['pressure'])) {
 			return false;
 		}
 		
-		return $this->getApiReading($object->main->pressure, 'apiPressure');
+		return $this->getApiReading($object->main->pressure, $this->sensorIds['pressure']);
 	}
 	
 	/**
@@ -93,11 +95,11 @@ class WeatherModel extends WateringSystemModelAbstract
 	 */
 	protected function getApiTemperature(\stdClass $object)
 	{
-		if (!isset($object->main) || !isset($object->main->temp)) {
+		if (!isset($object->main) || !isset($object->main->temp) || !isset($this->sensorIds['temperature'])) {
 			return false;
 		}
 	
-		return $this->getApiReading($object->main->temp, 'apiTemperature');
+		return $this->getApiReading($object->main->temp, $this->sensorIds['temperature']);
 	}
 	
 	/**
@@ -107,11 +109,11 @@ class WeatherModel extends WateringSystemModelAbstract
 	 */
 	protected function getApiCloudiness(\stdClass $object)
 	{
-		if (!isset($object->clouds) || !isset($object->clouds->all)) {
+		if (!isset($object->clouds) || !isset($object->clouds->all) || !isset($this->sensorIds['cloudiness'])) {
 			return false;
 		}
 	
-		return $this->getApiReading($object->clouds->all, 'apiCloudiness');
+		return $this->getApiReading($object->clouds->all, $this->sensorIds['cloudiness']);
 	}
 	
 	/**
@@ -121,11 +123,11 @@ class WeatherModel extends WateringSystemModelAbstract
 	 */
 	protected function getApiHumidity(\stdClass $object)
 	{
-		if (!isset($object->main) || !isset($object->main->humidity)) {
+		if (!isset($object->main) || !isset($object->main->humidity) || !isset($this->sensorIds['humidity'])) {
 			return false;
 		}
 	
-		return $this->getApiReading($object->main->humidity, 'apiHumidity');
+		return $this->getApiReading($object->main->humidity, $this->sensorIds['humidity']);
 	}
 	
 	/**
@@ -133,9 +135,9 @@ class WeatherModel extends WateringSystemModelAbstract
 	 * @param \stdClass $object
 	 * @return boolean|\sarah\Entity\SensorValue
 	 */
-	protected function getApiReading($value, $sensorName)
+	protected function getApiReading($value, $sensorId)
 	{
-		$sensor = $this->getSensorModel()->getSensorByName($sensorName);
+		$sensor = $this->getSensorModel()->getSensorById($sensorId);
 		if ($sensor instanceof Sensor) {
 			$sensorValue = new SensorValue();
 			$sensorValue->setSensor($sensor)

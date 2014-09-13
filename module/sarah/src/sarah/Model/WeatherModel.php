@@ -5,6 +5,7 @@ namespace sarah\Model;
 use sarah\Model\Sensors\SensorAbstract;
 use sarah\Entity\Sensor;
 use sarah\Entity\SensorValue;
+use Doctrine\ORM\Query;
 /**
  * Get weather information for locations
  * @author James Cooke
@@ -71,7 +72,9 @@ class WeatherModel extends SarahModelAbstract
 	 */
 	protected function getSensorModel()
 	{
-		return $this->getServiceLocator()->get('SensorModel');
+		$model = $this->getServiceLocator()->get('SensorModel');
+		$model->setHydrationMode(Query::HYDRATE_OBJECT);
+		return $model;
 	}
 	
 	/**

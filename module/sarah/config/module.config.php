@@ -29,6 +29,16 @@ return array(
                     ),
                 ),
             ),
+            'sarah.rpc.update-weather' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/update-weather',
+                    'defaults' => array(
+                        'controller' => 'sarah\\V1\\Rpc\\UpdateWeather\\Controller',
+                        'action' => 'updateWeather',
+                    ),
+                ),
+            ),
         ),
     ),
     'zf-versioning' => array(
@@ -36,6 +46,7 @@ return array(
             0 => 'sarah.rest.node',
             1 => 'sarah.rest.sensor',
             2 => 'sarah.rest.sensor-value',
+            3 => 'sarah.rpc.update-weather',
         ),
     ),
     'service_manager' => array(
@@ -121,6 +132,7 @@ return array(
             'sarah\\V1\\Rest\\Node\\Controller' => 'HalJson',
             'sarah\\V1\\Rest\\Sensor\\Controller' => 'HalJson',
             'sarah\\V1\\Rest\\SensorValue\\Controller' => 'HalJson',
+            'sarah\\V1\\Rpc\\UpdateWeather\\Controller' => 'Json',
         ),
         'accept_whitelist' => array(
             'sarah\\V1\\Rest\\Node\\Controller' => array(
@@ -138,6 +150,11 @@ return array(
                 1 => 'application/hal+json',
                 2 => 'application/json',
             ),
+            'sarah\\V1\\Rpc\\UpdateWeather\\Controller' => array(
+                0 => 'application/vnd.sarah.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ),
         ),
         'content_type_whitelist' => array(
             'sarah\\V1\\Rest\\Node\\Controller' => array(
@@ -149,6 +166,10 @@ return array(
                 1 => 'application/json',
             ),
             'sarah\\V1\\Rest\\SensorValue\\Controller' => array(
+                0 => 'application/vnd.sarah.v1+json',
+                1 => 'application/json',
+            ),
+            'sarah\\V1\\Rpc\\UpdateWeather\\Controller' => array(
                 0 => 'application/vnd.sarah.v1+json',
                 1 => 'application/json',
             ),
@@ -340,6 +361,20 @@ return array(
                     'sarah\\Entity' => 'sarah_driver',
                 ),
             ),
+        ),
+    ),
+    'controllers' => array(
+        'factories' => array(
+            'sarah\\V1\\Rpc\\UpdateWeather\\Controller' => 'sarah\\V1\\Rpc\\UpdateWeather\\UpdateWeatherControllerFactory',
+        ),
+    ),
+    'zf-rpc' => array(
+        'sarah\\V1\\Rpc\\UpdateWeather\\Controller' => array(
+            'service_name' => 'updateWeather',
+            'http_methods' => array(
+                0 => 'GET',
+            ),
+            'route_name' => 'sarah.rpc.update-weather',
         ),
     ),
 );

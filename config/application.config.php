@@ -6,7 +6,7 @@
  */
 return array(
     'modules' => array(
-        'Application',
+        'Documentation',
         'ZF\\DevelopmentMode',
         'ZF\\Apigility',
         'ZF\\Apigility\\Provider',
@@ -24,8 +24,9 @@ return array(
         'ZF\\Versioning',
     	'DoctrineModule',
     	'DoctrineORMModule',
+    	'Sarah',
     	'ZfrCors',
-        'sarah'
+        'Sensors'
     ),
     'module_listener_options' => array(
         'module_paths' => array(

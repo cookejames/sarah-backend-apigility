@@ -3,8 +3,6 @@
 namespace Sarah\Model;
 
 use Sarah\Model\SarahModelAbstract;
-use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
-use Doctrine\ORM\Query;
 
 /**
  * Get details about sensor values
@@ -13,7 +11,7 @@ use Doctrine\ORM\Query;
  */
 class SensorValueModel extends SarahModelAbstract 
 {
-	protected $repository = 'Sarah\Entity\SensorValue';
+	protected $entity = 'Sarah\Entity\SensorValue';
 	
 	/**
 	 * Get sensor values between two dates and for specified sensors
@@ -28,7 +26,7 @@ class SensorValueModel extends SarahModelAbstract
 		$queryBuilder = $this->createQueryBuilder();
 		$queryBuilder
 			->select('sensorValue')
-			->from($this->repository, 'sensorValue')	
+			->from($this->entity, 'sensorValue')	
 			->orderBy('sensorValue.date', $order);
 		
 		if ($from instanceof \DateTime) {
@@ -46,13 +44,8 @@ class SensorValueModel extends SarahModelAbstract
 				->andWhere('sensorValue.sensor IN(:sensors)')
 				->setParameter(':sensors', $sensors);
 		}
-		if ($this->hydrationMode === Query::HYDRATE_SCALAR) {
-			$queryBuilder->addSelect('IDENTITY(sensorValue.sensor) as sensorValue_sensor');
-		}
 
-		$query = $queryBuilder->getQuery();
-		$query->setHydrationMode($this->hydrationMode);
-		return new ORMPaginator($query, false);
+		return $this->returnResults($queryBuilder->getQuery());
 	}
 	
 	/**
@@ -65,14 +58,10 @@ class SensorValueModel extends SarahModelAbstract
 	{
 		$queryBuilder = $this->createQueryBuilder();
 		$queryBuilder->select('sensorValue')
-			->from($this->repository, 'sensorValue')
+			->from($this->entity, 'sensorValue')
 			->andWhere('sensorValue.id = :id')
 			->setParameters(array(':id' => $id));
 		
-		if ($this->hydrationMode === Query::HYDRATE_SCALAR) {
-			$queryBuilder->addSelect('IDENTITY(sensorValue.sensor) as sensorValue_sensor');
-		}
-	
-		return $queryBuilder->getQuery()->getOneOrNullResult($this->hydrationMode);
+		return $this->returnOneOrNullResult($queryBuilder->getQuery());
 	}
 }

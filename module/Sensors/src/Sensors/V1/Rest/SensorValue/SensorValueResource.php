@@ -3,22 +3,26 @@ namespace Sensors\V1\Rest\SensorValue;
 
 use ZF\ApiProblem\ApiProblem;
 use Sarah\Model\SensorValueModel;
-use Sarah\Paginator\DoctrineHydratingArrayAdapter;
-use Sensors\Rest\SarahAbstractResourceListener;
-use Doctrine\ORM\Query;
 use Zend\Stdlib\Hydrator\HydratorInterface;
+use ZF\Rest\AbstractResourceListener;
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator;
 
-class SensorValueResource extends SarahAbstractResourceListener
+class SensorValueResource extends AbstractResourceListener
 {
 	/**
 	 * @var SensorValueModel
 	 */
 	protected $model;
 	
-	public function __construct(SensorValueModel $model, HydratorInterface $hydrator = null, $prototype = null)
+	/**
+	 * @var HydratorInterface
+	 */
+	protected $hydrator;
+	
+	public function __construct(SensorValueModel $model, HydratorInterface $hydrator)
 	{
-		parent::__construct($model, $hydrator, $prototype);
-		$this->model->setHydrationMode(Query::HYDRATE_SCALAR);
+		$this->model = $model;
+		$this->hydrator = $hydrator;
 	}
 	
     /**
@@ -31,18 +35,16 @@ class SensorValueResource extends SarahAbstractResourceListener
     {
     	unset($data->id);
     	
-    	$doctrineEntity = $this->doctrineHydrator->hydrate(
-    			$this->hydrator->extract($data), 
-    			clone $this->doctrinePrototype
-		);
+    	$entityClass = $this->getEntityClass();
+    	$entity = $this->hydrator->hydrate((array)$data, new $entityClass);
     	
     	try {
-    		$this->model->saveEntity($doctrineEntity);
+    		$this->model->saveEntity($entity);
     	} catch (\Exception $e) {
     		return new ApiProblem(400, 'Could not save data');
     	}
         
-    	return $this->fetch($doctrineEntity->getId());
+    	return $this->fetch($entity->getId());
     }
 
     /**
@@ -75,8 +77,12 @@ class SensorValueResource extends SarahAbstractResourceListener
      */
     public function fetch($id)
     {
-    	$data = $this->model->getSensorValueById($id);
-    	return $this->hydrator->hydrate($data, clone $this->prototype);
+    	$sensorValue = $this->model->getSensorValueById($id);
+    	if (is_null($sensorValue)) {
+    		return new ApiProblem(404, 'Sensor value with that id not found');
+    	}
+    	
+    	return $sensorValue;
     }
 
     /**
@@ -102,8 +108,8 @@ class SensorValueResource extends SarahAbstractResourceListener
     	$from = \DateTime::createFromFormat('U', $params['from']);
     	$to = \DateTime::createFromFormat('U', $params['to']);
     	
-    	$sensorValues = $this->model->getSensorValuesBetween($from, $to, $sensors);
-    	return new SensorValueCollection(new DoctrineHydratingArrayAdapter($sensorValues, $this->hydrator, $this->prototype));
+    	$sensorValues = $this->model->paginateResults(true)->getSensorValuesBetween($from, $to, $sensors);
+    	return new SensorValueCollection(new DoctrinePaginator($sensorValues));
     }
 
     /**

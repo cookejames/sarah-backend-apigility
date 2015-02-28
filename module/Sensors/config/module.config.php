@@ -5,7 +5,7 @@ return array(
             'sensors.rest.node' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/node[/:node_id]',
+                    'route' => '/sensors/node[/:node_id]',
                     'defaults' => array(
                         'controller' => 'Sensors\\V1\\Rest\\Node\\Controller',
                     ),
@@ -14,7 +14,7 @@ return array(
             'sensors.rest.sensor' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/sensor[/:sensor_id]',
+                    'route' => '/sensors/sensor[/:sensor_id]',
                     'defaults' => array(
                         'controller' => 'Sensors\\V1\\Rest\\Sensor\\Controller',
                     ),
@@ -23,7 +23,7 @@ return array(
             'sensors.rest.sensor-value' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/sensor-value[/:sensor_value_id]',
+                    'route' => '/sensors/sensor-value[/:sensor_value_id]',
                     'defaults' => array(
                         'controller' => 'Sensors\\V1\\Rest\\SensorValue\\Controller',
                     ),
@@ -75,7 +75,7 @@ return array(
             'collection_query_whitelist' => array(),
             'page_size' => '25',
             'page_size_param' => null,
-            'entity_class' => 'Sensors\\V1\\Rest\\Node\\NodeEntity',
+            'entity_class' => 'Sarah\\Entity\\Node',
             'collection_class' => 'Sensors\\V1\\Rest\\Node\\NodeCollection',
             'service_name' => 'node',
         ),
@@ -97,7 +97,7 @@ return array(
             'collection_query_whitelist' => array(),
             'page_size' => 25,
             'page_size_param' => null,
-            'entity_class' => 'Sensors\\V1\\Rest\\Sensor\\SensorEntity',
+            'entity_class' => 'Sarah\\Entity\\Sensor',
             'collection_class' => 'Sensors\\V1\\Rest\\Sensor\\SensorCollection',
             'service_name' => 'sensor',
         ),
@@ -119,9 +119,9 @@ return array(
                 1 => 'from',
                 2 => 'to',
             ),
-            'page_size' => '2000',
+            'page_size' => '1000',
             'page_size_param' => 'page_size',
-            'entity_class' => 'Sensors\\V1\\Rest\\SensorValue\\SensorValueEntity',
+            'entity_class' => 'Sarah\\Entity\\SensorValue',
             'collection_class' => 'Sensors\\V1\\Rest\\SensorValue\\SensorValueCollection',
             'service_name' => 'sensorValue',
         ),
@@ -176,11 +176,11 @@ return array(
     ),
     'zf-hal' => array(
         'metadata_map' => array(
-            'Sensors\\V1\\Rest\\Node\\NodeEntity' => array(
+            'Sarah\\Entity\\Node' => array(
                 'entity_identifier_name' => 'id',
                 'route_name' => 'sensors.rest.node',
                 'route_identifier_name' => 'node_id',
-                'hydrator' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
+                'hydrator' => 'DoctrineModule\\Stdlib\\Hydrator\\DoctrineObject',
             ),
             'Sensors\\V1\\Rest\\Node\\NodeCollection' => array(
                 'entity_identifier_name' => 'id',
@@ -188,11 +188,11 @@ return array(
                 'route_identifier_name' => 'node_id',
                 'is_collection' => true,
             ),
-            'Sensors\\V1\\Rest\\Sensor\\SensorEntity' => array(
+            'Sarah\\Entity\\Sensor' => array(
                 'entity_identifier_name' => 'id',
                 'route_name' => 'sensors.rest.sensor',
                 'route_identifier_name' => 'sensor_id',
-                'hydrator' => 'Zend\\Stdlib\\Hydrator\\ObjectProperty',
+                'hydrator' => 'DoctrineModule\\Stdlib\\Hydrator\\DoctrineObject',
             ),
             'Sensors\\V1\\Rest\\Sensor\\SensorCollection' => array(
                 'entity_identifier_name' => 'id',
@@ -200,11 +200,11 @@ return array(
                 'route_identifier_name' => 'sensor_id',
                 'is_collection' => true,
             ),
-            'Sensors\\V1\\Rest\\SensorValue\\SensorValueEntity' => array(
+            'Sarah\\Entity\\SensorValue' => array(
                 'entity_identifier_name' => 'id',
                 'route_name' => 'sensors.rest.sensor-value',
                 'route_identifier_name' => 'sensor_value_id',
-                'hydrator' => 'Zend\\Stdlib\\Hydrator\\ObjectProperty',
+                'hydrator' => 'DoctrineModule\\Stdlib\\Hydrator\\DoctrineObject',
             ),
             'Sensors\\V1\\Rest\\SensorValue\\SensorValueCollection' => array(
                 'entity_identifier_name' => 'id',

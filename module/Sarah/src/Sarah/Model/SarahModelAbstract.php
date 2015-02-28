@@ -7,9 +7,9 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Log\Logger;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\EntityRepository;
 use Sarah\Entity\SarahEntityInterface;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 
 /**
  * Abstract class to carry out common model functions
@@ -20,8 +20,9 @@ abstract class SarahModelAbstract implements ServiceLocatorAwareInterface
 {
 	protected $serviceLocator;
 	protected $entityManager;
-	protected $repository;
-	protected $hydrationMode = Query::HYDRATE_SCALAR;
+	protected $entity;
+	protected $paginateResults = false;
+	protected $hydrationMode = Query::HYDRATE_OBJECT;
 	
 	/**
 	 * (non-PHPdoc)
@@ -66,14 +67,6 @@ abstract class SarahModelAbstract implements ServiceLocatorAwareInterface
 	}
 	
 	/**
-	 * @return EntityRepository
-	 */
-	protected function getRepository()
-	{
-		return $this->getEntityManager()->getRepository($this->repository);
-	}
-	
-	/**
 	 * @return QueryBuilder
 	 */
 	protected function createQueryBuilder()
@@ -111,5 +104,45 @@ abstract class SarahModelAbstract implements ServiceLocatorAwareInterface
 	public function getHydrationMode()
 	{
 		return $this->hydrationMode;
+	}
+	
+	/**
+	 * Should the results of queries that could return multiple results be paginated
+	 * @param boolean $paginate
+	 * @return SarahModelAbstract
+	 */
+	public function paginateResults($paginate)
+	{
+		$this->paginateResults = ($paginate == true);
+		return $this;
+	}
+	
+	/**
+	 * Return a paginator or array depending on whether pagination has been requested
+	 * @param Query $query
+	 * @return \Doctrine\ORM\Tools\Pagination\Paginator|multitype:
+	 */
+	protected function returnResults(Query $query, $hydrationMode = null)
+	{
+		//Set the result hydration mode
+		$hydrationMode = ($hydrationMode) ?: $this->hydrationMode;
+
+		//Return a straight query or paginator
+		if ($this->paginateResults) {
+			$query->setHydrationMode($hydrationMode);
+			return new ORMPaginator($query, false);
+		} else {
+			return $query->getResult($hydrationMode);
+		}
+	}
+	
+	/**
+	 * Return a single result or null
+	 * @param Query $query
+	 * @return \Doctrine\ORM\mixed
+	 */
+	protected function returnOneOrNullResult(Query $query, $hydrationMode = null)
+	{
+		return $query->getOneOrNullResult(($hydrationMode) ?: $this->hydrationMode);
 	}
 }

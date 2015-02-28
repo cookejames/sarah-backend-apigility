@@ -4,7 +4,6 @@ namespace Sarah\Model;
 
 use Sarah\Model\SarahModelAbstract;
 use Sarah\Entity\Node;
-use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 
 /**
  * Get details about node
@@ -13,7 +12,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
  */
 class NodeModel extends SarahModelAbstract 
 {
-	protected $repository = 'Sarah\Entity\Node';
+	protected $entity = 'Sarah\Entity\Node';
 	
 	/**
 	 * Get all sensors
@@ -23,13 +22,11 @@ class NodeModel extends SarahModelAbstract
 	{
 		$queryBuilder = $this->createQueryBuilder();
 		$queryBuilder->select('node')
-			->from($this->repository, 'node')
+			->from($this->entity, 'node')
 			->andWhere($queryBuilder->expr()->eq('node.isEnabled', true))
 			->orderBy('node.id', 'asc');
 		
-		$query = $queryBuilder->getQuery();
-		$query->setHydrationMode($this->hydrationMode);
-		return new ORMPaginator($query, false);
+		return $this->returnResults($queryBuilder->getQuery());
 	}
 	
 	/**
@@ -41,11 +38,11 @@ class NodeModel extends SarahModelAbstract
 	{
 		$queryBuilder = $this->createQueryBuilder();
 		$queryBuilder->select('node')
-			->from($this->repository, 'node')
+			->from($this->entity, 'node')
 			->andWhere($queryBuilder->expr()->eq('node.isEnabled', true))
 			->andWhere($queryBuilder->expr()->eq('node.id', ':node'))
 			->setParameters(array(':node' => $id));
 		
-		return $queryBuilder->getQuery()->getOneOrNullResult($this->hydrationMode);
+		return $this->returnOneOrNullResult($queryBuilder->getQuery());
 	}
 }

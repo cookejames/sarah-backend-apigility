@@ -2,43 +2,54 @@
 namespace Sensors\V1\Rest\SensorValue;
 
 use Zend\Stdlib\Hydrator\HydratorInterface;
-
-/**
- * Converts the array copy of a SensorValue to a SensorValueEntity
- * The difference between the two is that the date is represented
- * as a timestamp not a datetime
- * @author James Cooke
- *
- */
+use Sarah\Entity\SensorValue;
+use Sarah\Model\SensorModel;
+use Sarah\Entity\Sensor;
 class SensorValueHydrator implements HydratorInterface
 {
 	/**
-	 * (non-PHPdoc)
-	 * @see \Zend\Stdlib\Hydrator\HydrationInterface::hydrate()
+	 * @var SensorModel
 	 */
-	public function hydrate(array $data, $object)
+	private $sensorModel;
+	public function __construct(SensorModel $sensorModel)
 	{
-		if (!$object instanceof SensorValueEntity) {
-			throw new \Exception('object must be a SensorValueEntity');
-		}
-		if (!is_array($data)) {
-			return $data;
-		}
-
-		$object->id = $data['sensorValue_id'];
-		$object->sensor = (int)$data['sensorValue_sensor'];
-		$object->date = $data['sensorValue_date']->getTimestamp();
-		$object->value = (float)$data['sensorValue_value'];
-		
-		return $object;
+		$this->sensorModel = $sensorModel;
 	}
 	
-	/**
-	 * (non-PHPdoc)
+	/* (non-PHPdoc)
 	 * @see \Zend\Stdlib\Extractor\ExtractionInterface::extract()
 	 */
-	public function extract($object)
+	public function extract ($object)
 	{
-		return (array)$object;
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-PHPdoc)
+	 * @see \Zend\Stdlib\Hydrator\HydrationInterface::hydrate()
+	 */
+	public function hydrate (array $data, $object)
+	{
+		if (!$object instanceof SensorValue) {
+			throw new \Exception('Invalid object');
+		}
+		
+		if (isset($data['date']) && ($date = \DateTime::createFromFormat('U', $data['date'])) instanceof \DateTime) {
+			$object->setDate($date);
+		}
+		
+		if (isset($data['id'])) {
+			$object->setId($data['id']);
+		}
+		
+		if (isset($data['sensor']) && ($sensor = $this->sensorModel->getSensorById($data['sensor'])) instanceof Sensor) {
+			$object->setSensor($sensor);
+		}
+		
+		if (isset($data['value'])) {
+			$object->setValue($data['value']);
+		}
+		
+		return $object;
 	}
 }

@@ -3,22 +3,19 @@ namespace Sensors\V1\Rest\Sensor;
 
 use ZF\ApiProblem\ApiProblem;
 use Sarah\Model\SensorModel;
-use Sensors\Rest\SarahAbstractResourceListener;
-use Zend\Stdlib\Hydrator\HydratorInterface;
-use Doctrine\ORM\Query;
-use Sarah\Paginator\DoctrineHydratingArrayAdapter;
+use ZF\Rest\AbstractResourceListener;
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator;
 
-class SensorResource extends SarahAbstractResourceListener
+class SensorResource extends AbstractResourceListener
 {
 	/**
 	 * @var SensorModel
 	 */
 	protected $model;
 	
-	public function __construct(SensorModel $model, HydratorInterface $hydrator = null, $prototype = null)
+	public function __construct(SensorModel $model)
 	{
-		parent::__construct($model, $hydrator, $prototype);
-		$this->model->setHydrationMode(Query::HYDRATE_SCALAR);
+		$this->model = $model;
 	}
     /**
      * Create a resource
@@ -79,8 +76,8 @@ class SensorResource extends SarahAbstractResourceListener
 
     	$nodes = $params['nodes'];
 
-    	$sensors = $this->model->getSensors();
-    	return new SensorCollection(new DoctrineHydratingArrayAdapter($sensors, $this->hydrator, $this->prototype));
+    	$sensors = $this->model->paginateResults(true)->getSensors();
+    	return new SensorCollection(new DoctrinePaginator($sensors));
     }
 
     /**

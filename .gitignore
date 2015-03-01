@@ -1,3 +1,4 @@
 /vendor
 /data/DoctrineORMModule
 /logs/log
+/module/Sarah/tests/data

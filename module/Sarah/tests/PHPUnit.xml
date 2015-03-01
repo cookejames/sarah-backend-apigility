@@ -4,7 +4,7 @@
     >
     <testsuites>
         <testsuite name="Models">
-            <directory>./SarahTest/Model</directory>
+            <directory>./Sarah/Model</directory>
         </testsuite>
     </testsuites>
 </phpunit>

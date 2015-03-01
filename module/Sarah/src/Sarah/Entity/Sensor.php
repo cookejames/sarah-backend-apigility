@@ -35,22 +35,22 @@ class Sensor implements SarahEntityInterface
 	private $conversionFactor;
 	/** @ORM\Column(type="boolean") */
 	private $isRanged;
-	/** @ORM\Column(type="float") */
+	/** @ORM\Column(type="float", nullable=true) */
 	private $rangeMin;
-	/** @ORM\Column(type="float") */
+	/** @ORM\Column(type="float", nullable=true) */
 	private $rangeMax;
-	/** @ORM\Column(type="float") */
+	/** @ORM\Column(type="float", nullable=true) */
 	private $calibration;
-	/** @ORM\Column(type="float") */
+	/** @ORM\Column(type="float", nullable=true) */
 	private $graphStart;
 	/** @ORM\Column(type="boolean") */
 	private $isEnabled;
 	/** is this sensor used to determine if we will trigger the watering 
-	 * @ORM\Column(type="boolean") */
+	 * @ORM\Column(type="boolean", nullable=true) */
 	private $isWateringSensor;
-	/** @ORM\Column(type="float") */
+	/** @ORM\Column(type="float", nullable=true) */
 	private $wateringThresholdLower;
-	/** @ORM\Column(type="float") */
+	/** @ORM\Column(type="float", nullable=true) */
 	private $wateringThresholdUpper;
 	
 	/** Valid value types */

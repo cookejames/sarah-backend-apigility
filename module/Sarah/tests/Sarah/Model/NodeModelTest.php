@@ -2,24 +2,47 @@
 use Doctrine\ORM\Query;
 use SarahTest\Bootstrap;
 use Sarah\Model\NodeModel;
+use SarahTest\Database\TestCase;
 /**
  * NodeModel test case.
  */
-class NodeModelTest extends \PHPUnit_Framework_TestCase {
-	
+class NodeModelTest extends TestCase 
+{
 	/**
-	 *
 	 * @var NodeModel
 	 */
 	private $nodeModel;
+	
+	/* (non-PHPdoc)
+	 * @see \SarahTest\Database\TestCase::getServiceLocator()
+	*/
+	protected function getServiceLocator ()
+	{
+		return Bootstrap::getServiceManager();
+	}
+	
+	/* (non-PHPdoc)
+	 * @see PHPUnit_Extensions_Database_TestCase::getDataSet()
+	*/
+	protected function getDataSet ()
+	{
+		return $this->createArrayDataSet(array(
+			'nodes' => array(
+				array(
+					'id' => 1,
+					'name' => 'node1',
+					'isEnabled' => true
+				),
+			)
+		));
+	}
 	
 	/**
 	 * Prepares the environment before running a test.
 	 */
 	protected function setUp() {
 		parent::setUp ();
-		$serviceManager = Bootstrap::getServiceManager();
-		$this->nodeModel = $serviceManager->get('NodeModel');
+		$this->nodeModel = $this->getServiceLocator()->get('NodeModel');
 	}
 	
 	/**
@@ -27,9 +50,8 @@ class NodeModelTest extends \PHPUnit_Framework_TestCase {
 	 */
 	protected function tearDown() {
 		// TODO Auto-generated NodeModelTest::tearDown()
-		$this->nodeModel = null;
-		
 		parent::tearDown ();
+		$this->nodeModel = null;
 	}
 	
 	/**
@@ -40,9 +62,9 @@ class NodeModelTest extends \PHPUnit_Framework_TestCase {
 	    $this->nodeModel->setHydrationMode(Query::HYDRATE_ARRAY);
 		$nodes = $this->nodeModel->getNodes();
 		
-		$this->assertInstanceOf('Doctrine\ORM\Tools\Pagination\Paginator', $nodes);
+		$this->assertInternalType('array', $nodes);
 		
-		$this->assertGreaterThan(0, count($nodes));
+		$this->assertEquals(1, count($nodes));
 		
 		foreach ($nodes as $node) {
 			$this->assertInternalType('array', $node);
@@ -54,9 +76,9 @@ class NodeModelTest extends \PHPUnit_Framework_TestCase {
 	    $this->nodeModel->setHydrationMode(Query::HYDRATE_OBJECT);
 	    $nodes = $this->nodeModel->getNodes();
 	
-	    $this->assertInstanceOf('Doctrine\ORM\Tools\Pagination\Paginator', $nodes);
+	    $this->assertInternalType('array', $nodes);
 	
-	    $this->assertGreaterThan(0, count($nodes));
+	    $this->assertEquals(1, count($nodes));
 	
 	    foreach ($nodes as $node) {
 	        $this->assertInstanceOf('Sarah\Entity\Node', $node);

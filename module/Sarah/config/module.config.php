@@ -7,9 +7,10 @@ return array(
             'ZfrCors\Mvc\CorsRequestListener' => 'Sensors\Factory\Mvc\CustomCorsRequestListenerFactory',
         ),
     	'invokables' => array(
-    		'SensorValueModel' =>  'Sarah\Model\SensorValueModel',
-    		'SensorModel' => 'Sarah\Model\SensorModel',
+    		'HeatingGroupModel' => 'Sarah\Model\HeatingGroupModel',
     		'NodeModel' => 'Sarah\Model\NodeModel',
+    		'SensorModel' => 'Sarah\Model\SensorModel',
+    		'SensorValueModel' =>  'Sarah\Model\SensorValueModel',
         ),
     ),
     'doctrine' => array(

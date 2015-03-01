@@ -6,14 +6,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * A node which is a collection of sensors
+ * A heating group
  * @ORM\Entity
- * @ORM\Table(name="nodes")
+ * @ORM\Table(name="heatingGroups")
  */
-class Node implements SarahEntityInterface
+class HeatingGroup implements SarahEntityInterface
 {
 	/** 
-	 * @ORM\Id @ORM\Column(type="integer")
+	 * @ORM\Id @ORM\Column(type="integer", options={"unsigned":true})
 	 * @ORM\GeneratedValue
 	 */
 	private $id;
@@ -21,11 +21,11 @@ class Node implements SarahEntityInterface
 	private $name;
 	/** @ORM\Column(type="boolean") */
 	private $isEnabled;
-	/** @ORM\OneToMany(targetEntity="Sensor", mappedBy="node") **/
-	private $sensors;
+	/** @ORM\OneToMany(targetEntity="HeatingSchedule", mappedBy="group") **/
+	private $schedules;
 	
 	public function __construct() {
-		$this->sensors = new ArrayCollection();
+		$this->schedules = new ArrayCollection();
 	}
 	
 	/**
@@ -73,9 +73,9 @@ class Node implements SarahEntityInterface
 	}
 	
 	/**
-	 * @return ArrayCollection $sensors
+	 * @return ArrayCollection $schedules
 	 */
-	public function getSensors() {
-		return $this->sensors;
+	public function getSchedules() {
+		return $this->schedules;
 	}
 }

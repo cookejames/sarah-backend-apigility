@@ -49,12 +49,11 @@ class Bootstrap
 		
 
 		$autoloaderPath = dirname(dirname(dirname(static::$baseDir))) . '/config/autoload/';
-		if (!is_dir($autoloaderPath)) {
-			$autoloaderPath = static::findParentPath('config');
-		}
+		$testConfigPath = static::findParentPath('config');
 		if ($autoloaderPath) {
 			$config['module_listener_options']['config_glob_paths'] = array(
-				$autoloaderPath . '{,*.}{global,local,phpunit}.php'
+				$autoloaderPath . '{,*.}{global,local,phpunit}.php',
+				$testConfigPath . '/{,*.}{global,local,phpunit}.php'
 			);
 		}
 

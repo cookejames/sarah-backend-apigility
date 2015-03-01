@@ -87,6 +87,18 @@ abstract class SarahModelAbstract implements ServiceLocatorAwareInterface
 	}
 	
 	/**
+	 * Remove and flush an entity
+	 * @param SarahEntityInterface $entity
+	 * @return \Sarah\Model\SarahModelAbstract
+	 */
+	public function removeEntity(SarahEntityInterface $entity)
+	{
+		$this->getEntityManager()->remove($entity);
+		$this->getEntityManager()->flush();
+		return $this;		
+	}
+	
+	/**
 	 * Set the doctrine hydration mode for all queries
 	 * @param unknown $hydrationMode
 	 * @return \sarah\Model\SarahModelAbstract

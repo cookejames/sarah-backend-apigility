@@ -8,6 +8,7 @@ return array(
         ),
     	'invokables' => array(
     		'HeatingGroupModel' => 'Sarah\Model\HeatingGroupModel',
+    		'HeatingScheduleModel' => 'Sarah\Model\HeatingScheduleModel',
     		'NodeModel' => 'Sarah\Model\NodeModel',
     		'SensorModel' => 'Sarah\Model\SensorModel',
     		'SensorValueModel' =>  'Sarah\Model\SensorValueModel',

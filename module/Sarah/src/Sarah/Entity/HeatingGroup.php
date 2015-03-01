@@ -68,7 +68,7 @@ class HeatingGroup implements SarahEntityInterface
 	 * @param field_type $isEnabled
 	 */
 	public function setIsEnabled($isEnabled) {
-		$this->isEnabled = $isEnabled;
+		$this->isEnabled = ($isEnabled == true);
 		return $this;
 	}
 	

@@ -22,11 +22,12 @@ return array(
         'ZF\\Rest',
         'ZF\\Rpc',
         'ZF\\Versioning',
-    	'DoctrineModule',
-    	'DoctrineORMModule',
-    	'Sarah',
-    	'ZfrCors',
-        'Sensors'
+        'DoctrineModule',
+        'DoctrineORMModule',
+        'Sarah',
+        'ZfrCors',
+        'Sensors',
+        'Heating'
     ),
     'module_listener_options' => array(
         'module_paths' => array(

@@ -9,5 +9,10 @@ return array(
             ),
         ),
     ),
-	'logPath' => realpath(__DIR__ . '/../../logs/log'),
+    'logPath' => '/var/www/api.sarah.local/logs/log',
+    'db' => array(
+        'adapters' => array(
+            'sarah' => array(),
+        ),
+    ),
 );

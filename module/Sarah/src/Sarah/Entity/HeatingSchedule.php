@@ -21,23 +21,31 @@ class HeatingSchedule implements SarahEntityInterface
 	 * @ORM\JoinColumn(name="`group`", referencedColumnName="id")
 	 * */
 	private $group;
-	/** @ORM\Column(type="boolean") */
+	/** @ORM\Column(type="boolean", options={"unsigned":true}) */
 	private $heatingOn;
-	/** @ORM\Column(type="boolean") */
+	/** @ORM\Column(type="boolean", options={"unsigned":true}) */
 	private $waterOn;
-	/** @ORM\Column(name="mon", type="boolean") */
+	/** @ORM\Column(type="integer", length=1, options={"unsigned":true}) */
+	private $startHour;
+	/** @ORM\Column(type="integer", length=1, options={"unsigned":true}) */
+	private $startMin;
+	/** @ORM\Column(type="integer", length=1, options={"unsigned":true}) */
+	private $endHour;
+	/** @ORM\Column(type="integer", length=1, options={"unsigned":true}) */
+	private $endMin;	
+	/** @ORM\Column(name="mon", type="boolean", options={"unsigned":true}) */
 	private $monday;
-	/** @ORM\Column(name="tue", type="boolean") */
+	/** @ORM\Column(name="tue", type="boolean", options={"unsigned":true}) */
 	private $tuesday;
-	/** @ORM\Column(name="wed", type="boolean") */
+	/** @ORM\Column(name="wed", type="boolean", options={"unsigned":true}) */
 	private $wednesday;
-	/** @ORM\Column(name="thu", type="boolean") */
+	/** @ORM\Column(name="thu", type="boolean", options={"unsigned":true}) */
 	private $thursday;
-	/** @ORM\Column(name="fri", type="boolean") */
+	/** @ORM\Column(name="fri", type="boolean", options={"unsigned":true}) */
 	private $friday;
-	/** @ORM\Column(name="sat", type="boolean") */
+	/** @ORM\Column(name="sat", type="boolean", options={"unsigned":true}) */
 	private $saturday;
-	/** @ORM\Column(name="sun", type="boolean") */
+	/** @ORM\Column(name="sun", type="boolean", options={"unsigned":true}) */
 	private $sunday;
 	/**
 	 * @return the $id
@@ -225,5 +233,73 @@ class HeatingSchedule implements SarahEntityInterface
 		$this->sunday = $sunday;
 		return $this;
 	}
+	/**
+	 * @return the $startHour
+	 */
+	public function getStartHour ()
+	{
+		return $this->startHour;
+	}
+
+	/**
+	 * @return the $startMin
+	 */
+	public function getStartMin ()
+	{
+		return $this->startMin;
+	}
+
+	/**
+	 * @return the $endHour
+	 */
+	public function getEndHour ()
+	{
+		return $this->endHour;
+	}
+
+	/**
+	 * @return the $endMin
+	 */
+	public function getEndMin ()
+	{
+		return $this->endMin;
+	}
+
+	/**
+	 * @param field_type $startHour
+	 */
+	public function setStartHour ($startHour)
+	{
+		$this->startHour = (int)$startHour;
+		return $this;
+	}
+
+	/**
+	 * @param field_type $startMin
+	 */
+	public function setStartMin ($startMin)
+	{
+		$this->startMin = (int)$startMin;
+		return $this;
+	}
+
+	/**
+	 * @param field_type $endHour
+	 */
+	public function setEndHour ($endHour)
+	{
+		$this->endHour = (int)$endHour;
+		return $this;
+	}
+
+	/**
+	 * @param field_type $endMin
+	 */
+	public function setEndMin ($endMin)
+	{
+		$this->endMin = (int)$endMin;
+		return $this;
+	}
+
 
 }
